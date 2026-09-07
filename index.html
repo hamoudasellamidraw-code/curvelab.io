@@ -9,12 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* --- CSS RESET & VARIABLES --- */
     :root {
       --bg-dark: #0a0a0c;
       --bg-card: #131317;
       --accent-glow: #f39c12;
-      --accent-warm: #e67e22;
       --text-main: #f0f0f5;
       --text-muted: #9494a0;
       --border-color: rgba(255, 255, 255, 0.08);
@@ -40,7 +38,6 @@
       text-decoration: none;
     }
 
-    /* --- NAVIGATION --- */
     nav {
       display: flex;
       justify-content: space-between;
@@ -50,7 +47,7 @@
       width: 100%;
       top: 0;
       left: 0;
-      background: rgba(10, 10, 12, 0.8);
+      background: rgba(10, 10, 12, 0.85);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       z-index: 1000;
@@ -82,9 +79,8 @@
       color: var(--text-main);
     }
 
-    /* --- HERO SECTION --- */
     .hero {
-      min-height: 100vh;
+      min-height: 80vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -120,15 +116,16 @@
 
     .btn {
       display: inline-block;
-      padding: 0.9rem 2.2rem;
+      padding: 0.8rem 1.8rem;
       border-radius: 50px;
       background: var(--text-main);
       color: var(--bg-dark);
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       transition: all 0.3s ease;
       cursor: pointer;
       border: none;
+      text-align: center;
     }
 
     .btn:hover {
@@ -137,94 +134,96 @@
       transform: translateY(-2px);
     }
 
-    /* --- PRODUCT SHOWCASE --- */
     .section {
-      padding: 6rem 5%;
+      padding: 4rem 5%;
       max-width: 1200px;
       margin: 0 auto;
     }
 
     .section-title {
-      font-size: 2rem;
-      font-weight: 600;
+      font-size: 2.2rem;
+      font-weight: 700;
       margin-bottom: 3rem;
       text-align: center;
     }
 
-    .product-grid {
+    .catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 4rem;
-      align-items: center;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 3rem;
     }
 
-    .product-visual {
-      position: relative;
+    .product-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 20px;
-      padding: 3rem 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .lamp-glow-effect {
-      position: absolute;
-      width: 200px;
-      height: 200px;
-      background: var(--accent-glow);
-      filter: blur(80px);
-      opacity: 0.25;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .product-img {
-      max-width: 100%;
-      height: auto;
-      z-index: 2;
-      border-radius: 12px;
-    }
-
-    .product-details {
+      padding: 2rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      justify-content: space-between;
+      transition: transform 0.3s ease, border-color 0.3s ease;
     }
 
-    .product-title {
-      font-size: 2.2rem;
+    .product-card:hover {
+      border-color: rgba(243, 156, 18, 0.4);
+      transform: translateY(-5px);
+    }
+
+    .product-image-wrap {
+      position: relative;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info h3 {
+      font-size: 1.6rem;
       font-weight: 700;
+      margin-bottom: 0.5rem;
     }
 
-    .price {
-      font-size: 1.5rem;
+    .product-info .price {
+      font-size: 1.25rem;
       color: var(--accent-glow);
       font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .product-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
     }
 
     .features-list {
       list-style: none;
+      margin-bottom: 2rem;
       display: flex;
       flex-direction: column;
-      gap: 0.8rem;
+      gap: 0.5rem;
     }
 
     .features-list li {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
     }
 
     .features-list li span {
       color: var(--accent-glow);
+      margin-right: 0.5rem;
     }
 
-    /* --- ABOUT SECTION --- */
     .about-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -246,7 +245,6 @@
       line-height: 1.8;
     }
 
-    /* --- FOOTER --- */
     footer {
       border-top: 1px solid var(--border-color);
       padding: 3rem 5%;
@@ -256,76 +254,87 @@
       margin-top: 4rem;
     }
 
-    /* --- RESPONSIVE --- */
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .product-grid { grid-template-columns: 1fr; }
-      .about-card { padding: 2rem 1.5rem; }
+      .catalog-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVIGATION -->
   <nav>
     <div class="logo">CURVE LAB</div>
     <ul class="nav-links">
-      <li><a href="#product">Lamps</a></li>
+      <li><a href="#collection">Collection</a></li>
       <li><a href="#about">About Studio</a></li>
-      <li><a href="#order">Order</a></li>
     </ul>
   </nav>
 
-  <!-- HERO SECTION -->
   <section class="hero">
     <div class="hero-tag">Algorithmic Lighting Studio</div>
     <h1>Calculated Geometry. Ambient Illumination.</h1>
-    <p>3D-printed parametric lamps engineered to turn architectural algorithms into soft, living light gradients.</p>
-    <a href="#product" class="btn">Explore Helix 01</a>
+    <p>3D-printed parametric lamps engineered to turn computational algorithms into warm, living light gradients.</p>
+    <a href="#collection" class="btn">Explore Collection</a>
   </section>
 
-  <!-- PRODUCT SECTION -->
-  <section class="section" id="product">
-    <div class="product-grid">
+  <section class="section" id="collection">
+    <h2 class="section-title">The Lamp Collection</h2>
+    
+    <div class="catalog-grid">
       
-      <div class="product-visual">
-        <div class="lamp-glow-effect"></div>
-        <!-- Placeholder Image — replace src with your lamp image filename -->
-        <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80" alt="Helix 01 Lamp" class="product-img">
+      <!-- HELIX 01 -->
+      <div class="product-card">
+        <div>
+          <div class="product-image-wrap">
+            <img src="helix01.jpg" alt="Helix 01 Parametric Spiral Lamp">
+          </div>
+          <div class="product-info">
+            <h3>Helix 01</h3>
+            <div class="price">Parametric Spiral Lamp</div>
+            <p>A mesmerizing, computationally-generated spiral form. Delicate outer coils filter warm light into complex, dynamic ambient illumination.</p>
+            <ul class="features-list">
+              <li><span>✦</span> Precision spiral ribbed diffuser</li>
+              <li><span>✦</span> Warm dimmable LED ambiance</li>
+              <li><span>✦</span> Tactile wooden base accent</li>
+              <li><span>✦</span> 3D-printed in matte white polymer</li>
+            </ul>
+          </div>
+        </div>
+        <a href="https://wa.me/1234567890?text=Hi%20Curve%20Lab,%20I%20want%20to%20order%20the%20Helix%2001%20lamp." target="_blank" class="btn">Order Helix 01</a>
       </div>
 
-      <div class="product-details">
-        <div class="hero-tag">Flagship Model</div>
-        <h2 class="product-title">Helix 01</h2>
-        <div class="price">$120 USD</div>
-        <p style="color: var(--text-muted);">A cordless, rechargeable table lamp featuring a precision-calculated ribbed diffuser that casts warm, soft ambient lighting across tabletop surfaces.</p>
-
-        <ul class="features-list">
-          <li><span>✦</span> Parametric ribbed diffuser engineered for glare-free light</li>
-          <li><span>✦</span> Cordless & Rechargeable via USB-C</li>
-          <li><span>✦</span> 3D-printed in small batches using eco-conscious polymers</li>
-          <li><span>✦</span> Lightweight, compact footprint for living & workspace desks</li>
-        </ul>
-
-        <div id="order" style="margin-top: 1rem;">
-          <!-- Replace phone number with your WhatsApp number -->
-          <a href="https://wa.me/1234567890?text=Hi%20Curve%20Lab,%20I%20want%20to%20order%20the%20Helix%2001%20lamp." target="_blank" class="btn">Order via WhatsApp</a>
+      <!-- CALLA LILY -->
+      <div class="product-card">
+        <div>
+          <div class="product-image-wrap">
+            <img src="calla-lily.jpg" alt="Calla Lily Sculptural Folded Lamp">
+          </div>
+          <div class="product-info">
+            <h3>Calla Lily</h3>
+            <div class="price">Sculptural Folded Lamp</div>
+            <p>A graceful, organic folded sculptural shape inspired by nature. Layered translucent petals diffuse light softly into a calm interior accent.</p>
+            <ul class="features-list">
+              <li><span>✦</span> Organic organic-folding geometry</li>
+              <li><span>✦</span> Soft, diffused ambient glow</li>
+              <li><span>✦</span> Natural wooden base accent</li>
+              <li><span>✦</span> Hand-finished matte white polymer</li>
+            </ul>
+          </div>
         </div>
+        <a href="https://wa.me/1234567890?text=Hi%20Curve%20Lab,%20I%20want%20to%20order%20the%20Calla%20Lily%20lamp." target="_blank" class="btn">Order Calla Lily</a>
       </div>
 
     </div>
   </section>
 
-  <!-- ABOUT SECTION -->
   <section class="section" id="about">
     <div class="about-card">
       <h2>Where Mathematics Meets Illumination</h2>
-      <p>At Curve Lab, we start with code, mathematical curves, and computational geometry—a practice known as parametric design. By manipulating geometric rules, we sculpt fluid silhouettes and micro-textures that bend and soften light in ways traditional manufacturing cannot achieve.</p>
+      <p>At Curve Lab, we start with code, mathematical curves, and computational geometry. By manipulating geometric rules, we sculpt fluid silhouettes and micro-textures that bend and soften light in ways traditional manufacturing cannot achieve.</p>
       <p>Every piece is printed and assembled layer-by-layer in small batches, ensuring high precision with zero unnecessary material waste.</p>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <p>© 2026 Curve Lab Studio. All rights reserved. Parametric Lighting & Computational Design.</p>
   </footer>
