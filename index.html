@@ -1,285 +1,334 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hamouda SELLAMI | Portfolio</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curve Lab — Parametric Lighting Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* --- CSS RESET & VARIABLES --- */
+    :root {
+      --bg-dark: #0a0a0c;
+      --bg-card: #131317;
+      --accent-glow: #f39c12;
+      --accent-warm: #e67e22;
+      --text-main: #f0f0f5;
+      --text-muted: #9494a0;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-    <link href="https://fonts.googleapismily=Poppins:wght@300;400;600;700&display=swap
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Poppins',sans-serif;
-        }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
 
-        body{
-            background:#0f172a;
-            color:white;
-            line-height:1.6;
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        header{
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            padding:2rem;
-            background:linear-gradient(135deg,#0f172a,#1e293b,#2563eb);
-        }
+    /* --- NAVIGATION --- */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(10, 10, 12, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+    }
 
-        .hero h1{
-            font-size:4rem;
-            margin-bottom:10px;
-        }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: linear-gradient(45deg, #fff, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-        .hero p{
-            font-size:1.3rem;
-            color:#cbd5e1;
-            margin-bottom:20px;
-        }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
 
-        .btn{
-            display:inline-block;
-            padding:12px 25px;
-            background:#3b82f6;
-            color:white;
-            text-decoration:none;
-            border-radius:8px;
-            transition:.3s;
-        }
+    .nav-links a {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
 
-        .btn:hover{
-            background:#2563eb;
-            transform:translateY(-2px);
-        }
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
 
-        nav{
-            position:fixed;
-            top:0;
-            width:100%;
-            background:rgba(15,23,42,.95);
-            backdrop-filter:blur(10px);
-            z-index:1000;
-        }
+    /* --- HERO SECTION --- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 1rem 4rem;
+      background: radial-gradient(circle at 50% 30%, rgba(243, 156, 18, 0.12) 0%, rgba(10, 10, 12, 0) 70%);
+    }
 
-        nav ul{
-            display:flex;
-            justify-content:center;
-            list-style:none;
-            padding:1rem;
-            gap:2rem;
-        }
+    .hero-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--accent-glow);
+      margin-bottom: 1rem;
+    }
 
-        nav a{
-            color:white;
-            text-decoration:none;
-            transition:.3s;
-        }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      max-width: 800px;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
 
-        nav a:hover{
-            color:#60a5fa;
-        }
+    .hero p {
+      color: var(--text-muted);
+      max-width: 580px;
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+    }
 
-        section{
-            padding:80px 10%;
-        }
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2.2rem;
+      border-radius: 50px;
+      background: var(--text-main);
+      color: var(--bg-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
 
-        h2{
-            text-align:center;
-            margin-bottom:40px;
-            font-size:2.5rem;
-            color:#60a5fa;
-        }
+    .btn:hover {
+      background: var(--accent-glow);
+      box-shadow: 0 0 25px rgba(243, 156, 18, 0.4);
+      transform: translateY(-2px);
+    }
 
-        .about{
-            max-width:900px;
-            margin:auto;
-            text-align:center;
-            color:#cbd5e1;
-        }
+    /* --- PRODUCT SHOWCASE --- */
+    .section {
+      padding: 6rem 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-        .grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-            gap:25px;
-        }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
 
-        .card{
-            background:#1e293b;
-            border-radius:15px;
-            overflow:hidden;
-            transition:.3s;
-        }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 4rem;
+      align-items: center;
+    }
 
-        .card:hover{
-            transform:translateY(-5px);
-        }
+    .product-visual {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
 
-        .card img{
-            width:100%;
-            height:220px;
-            object-fit:cover;
-        }
+    .lamp-glow-effect {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: var(--accent-glow);
+      filter: blur(80px);
+      opacity: 0.25;
+      border-radius: 50%;
+      pointer-events: none;
+    }
 
-        .card-content{
-            padding:20px;
-        }
+    .product-img {
+      max-width: 100%;
+      height: auto;
+      z-index: 2;
+      border-radius: 12px;
+    }
 
-        .card h3{
-            margin-bottom:10px;
-        }
+    .product-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
 
-        .card p{
-            color:#cbd5e1;
-        }
+    .product-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+    }
 
-        footer{
-            text-align:center;
-            padding:30px;
-            background:#020617;
-            color:#94a3b8;
-        }
+    .price {
+      font-size: 1.5rem;
+      color: var(--accent-glow);
+      font-weight: 600;
+    }
 
-        .socials{
-            display:flex;
-            justify-content:center;
-            gap:20px;
-            margin-top:20px;
-        }
+    .features-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
 
-        .socials a{
-            color:#60a5fa;
-            text-decoration:none;
-            font-weight:600;
-        }
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
 
-        .socials a:hover{
-            color:white;
-        }
+    .features-list li span {
+      color: var(--accent-glow);
+    }
 
-        html{
-            scroll-behavior:smooth;
-        }
-    </style>
+    /* --- ABOUT SECTION --- */
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+
+    .about-card h2 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-card p {
+      color: var(--text-muted);
+      max-width: 750px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.8;
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 3rem 5%;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-top: 4rem;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .product-grid { grid-template-columns: 1fr; }
+      .about-card { padding: 2rem 1.5rem; }
+    }
+  </style>
 </head>
 <body>
 
-<nav>
-    <ul>
-        <li>#aboutAbout</a></li>
-        <li>#projectsProjects</a></li>
-        <li>#designDesign</a></li>
-        <li>#drawingDrawing</a></li>
-        <li>#contactContact</a></li>
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="logo">CURVE LAB</div>
+    <ul class="nav-links">
+      <li><a href="#product">Lamps</a></li>
+      <li><a href="#about">About Studio</a></li>
+      <li><a href="#order">Order</a></li>
     </ul>
-</nav>
+  </nav>
 
-<header>
-    <div class="hero">
-        <h1>Hamouda SELLAMI</h1>
-        <p>Technical Leader • Designer • Artist • Creator</p>
-        #projectsExplore My Work</a>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-tag">Algorithmic Lighting Studio</div>
+    <h1>Calculated Geometry. Ambient Illumination.</h1>
+    <p>3D-printed parametric lamps engineered to turn architectural algorithms into soft, living light gradients.</p>
+    <a href="#product" class="btn">Explore Helix 01</a>
+  </section>
+
+  <!-- PRODUCT SECTION -->
+  <section class="section" id="product">
+    <div class="product-grid">
+      
+      <div class="product-visual">
+        <div class="lamp-glow-effect"></div>
+        <!-- Placeholder Image — replace src with your lamp image filename -->
+        <img src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=800&q=80" alt="Helix 01 Lamp" class="product-img">
+      </div>
+
+      <div class="product-details">
+        <div class="hero-tag">Flagship Model</div>
+        <h2 class="product-title">Helix 01</h2>
+        <div class="price">$120 USD</div>
+        <p style="color: var(--text-muted);">A cordless, rechargeable table lamp featuring a precision-calculated ribbed diffuser that casts warm, soft ambient lighting across tabletop surfaces.</p>
+
+        <ul class="features-list">
+          <li><span>✦</span> Parametric ribbed diffuser engineered for glare-free light</li>
+          <li><span>✦</span> Cordless & Rechargeable via USB-C</li>
+          <li><span>✦</span> 3D-printed in small batches using eco-conscious polymers</li>
+          <li><span>✦</span> Lightweight, compact footprint for living & workspace desks</li>
+        </ul>
+
+        <div id="order" style="margin-top: 1rem;">
+          <!-- Replace phone number with your WhatsApp number -->
+          <a href="https://wa.me/1234567890?text=Hi%20Curve%20Lab,%20I%20want%20to%20order%20the%20Helix%2001%20lamp." target="_blank" class="btn">Order via WhatsApp</a>
+        </div>
+      </div>
+
     </div>
-</header>
+  </section>
 
-<section id="about">
-    <h2>About Me</h2>
-    <div class="about">
-        <p>
-            Welcome to my portfolio. I am a Technical Leader passionate about
-            software development, innovation, design, drawing, and creative projects.
-            This website showcases both my professional achievements and personal hobbies.
-        </p>
+  <!-- ABOUT SECTION -->
+  <section class="section" id="about">
+    <div class="about-card">
+      <h2>Where Mathematics Meets Illumination</h2>
+      <p>At Curve Lab, we start with code, mathematical curves, and computational geometry—a practice known as parametric design. By manipulating geometric rules, we sculpt fluid silhouettes and micro-textures that bend and soften light in ways traditional manufacturing cannot achieve.</p>
+      <p>Every piece is printed and assembled layer-by-layer in small batches, ensuring high precision with zero unnecessary material waste.</p>
     </div>
-</section>
+  </section>
 
-<section id="projects">
-    <h2>Projects</h2>
-
-    <div class="grid">
-        <div class="card">
-            https://picsum.photos/600/400?random=1
-            <div class="card-content">
-                <h3>Project One</h3>
-                <p>Description of your project, technologies used and achievements.</p>
-            </div>
-        </div>
-
-        <div class="card">
-            https://picsum.photos/600/400?random=2
-            <div class="card-content">
-                <h3>Project Two</h3>
-                <p>Description of your project, technologies used and achievements.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="design">
-    <h2>Design Creations</h2>
-
-    <div class="grid">
-        <div class="card">
-            https://picsum.photos/600/400?random=3
-            <div class="card-content">
-                <h3>UI/UX Design</h3>
-                <p>Showcase your application designs, mockups and creative concepts.</p>
-            </div>
-        </div>
-
-        <div class="card">
-            https://picsum.photos/600/400?random=4
-            <div class="card-content">
-                <h3>Graphic Design</h3>
-                <p>Posters, branding, logos and visual communication work.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="drawing">
-    <h2>Drawing & Art</h2>
-
-    <div class="grid">
-        <div class="card">
-            https://picsum.photos/600/400?random=5
-            <div class="card-content">
-                <h3>Sketch Collection</h3>
-                <p>Traditional and digital drawings, concept art and illustrations.</p>
-            </div>
-        </div>
-
-        <div class="card">
-            <img src="httpsphotos/600/400?random=6
-            <div class="card-content">
-                <h3>Personal Artwork</h3>
-                <p>A selection of creative pieces and artistic experiments.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="contact">
-    <h2>Contact</h2>
-
-    <div class="about">
-        <p>Let's connect and collaborate.</p>
-
-        <div class="socials">
-            https://github.com/yourusernameGitHub</a>
-            <atps://linkedin.com/in/yourprofileLinkedIn</a>
-            <aur.email@example.comEmail</a>
-        </div>
-    </div>
-</section>
-
-<footer>
-    <p>© 2026 Hamouda SELLAMI. All Rights Reserved.</p>
-</footer>
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Curve Lab Studio. All rights reserved. Parametric Lighting & Computational Design.</p>
+  </footer>
 
 </body>
 </html>
