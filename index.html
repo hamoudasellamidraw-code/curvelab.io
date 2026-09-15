@@ -3,341 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curve Lab — Parametric Lighting Studio</title>
+  <meta name="description" content="Curve Lab — sculptural lighting shaped by computation, curves and 3D printing.">
+  <title>Curve Lab — Light, shaped by curves.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-dark: #0a0a0c;
-      --bg-card: #131317;
-      --accent-glow: #f39c12;
-      --text-main: #f0f0f5;
-      --text-muted: #9494a0;
-      --border-color: rgba(255, 255, 255, 0.08);
-      --font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      font-family: var(--font-family);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 5%;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      left: 0;
-      background: rgba(10, 10, 12, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-color);
-      z-index: 1000;
-    }
-
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      background: linear-gradient(45deg, #fff, var(--text-muted));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      transition: color 0.3s ease;
-    }
-
-    .nav-links a:hover {
-      color: var(--text-main);
-    }
-
-    .hero {
-      min-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 8rem 1rem 4rem;
-      background: radial-gradient(circle at 50% 30%, rgba(243, 156, 18, 0.12) 0%, rgba(10, 10, 12, 0) 70%);
-    }
-
-    .hero-tag {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-      color: var(--accent-glow);
-      margin-bottom: 1rem;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 700;
-      letter-spacing: -1px;
-      max-width: 800px;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-    }
-
-    .hero p {
-      color: var(--text-muted);
-      max-width: 580px;
-      font-size: 1.1rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 0.8rem 1.8rem;
-      border-radius: 50px;
-      background: var(--text-main);
-      color: var(--bg-dark);
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      border: none;
-      text-align: center;
-    }
-
-    .btn:hover {
-      background: var(--accent-glow);
-      box-shadow: 0 0 25px rgba(243, 156, 18, 0.4);
-      transform: translateY(-2px);
-    }
-
-    .section {
-      padding: 4rem 5%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-title {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 3rem;
-      text-align: center;
-    }
-
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 3rem;
-    }
-
-    .product-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.3s ease, border-color 0.3s ease;
-    }
-
-    .product-card:hover {
-      border-color: rgba(243, 156, 18, 0.4);
-      transform: translateY(-5px);
-    }
-
-    .product-image-wrap {
-      position: relative;
-      background: #000;
-      border-radius: 14px;
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-      height: 380px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .product-image-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .product-info h3 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .product-info .price {
-      font-size: 1.25rem;
-      color: var(--accent-glow);
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .product-info p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .features-list {
-      list-style: none;
-      margin-bottom: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .features-list li {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .features-list li span {
-      color: var(--accent-glow);
-      margin-right: 0.5rem;
-    }
-
-    .about-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: 24px;
-      padding: 4rem 3rem;
-      text-align: center;
-      margin-top: 4rem;
-    }
-
-    .about-card h2 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .about-card p {
-      color: var(--text-muted);
-      max-width: 750px;
-      margin: 0 auto 1.5rem;
-      line-height: 1.8;
-    }
-
-    footer {
-      border-top: 1px solid var(--border-color);
-      padding: 3rem 5%;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-top: 4rem;
-    }
-
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .catalog-grid { grid-template-columns: 1fr; }
-    }
+    :root{--paper:#f2efe8;--ink:#141412;--muted:#77736b;--line:rgba(20,20,18,.14);--soft:#e6e0d5;--white:#fbfaf7;--warm:#c89055;--dark:#171714;--max:1440px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--paper);color:var(--ink);font-family:Manrope,system-ui,sans-serif;line-height:1.55;overflow-x:hidden}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");z-index:20}
+    a{color:inherit;text-decoration:none}
+    img,video{display:block;width:100%}
+    .mono{font:400 .68rem/1.2 'DM Mono',monospace;letter-spacing:.11em;text-transform:uppercase}
+    .wrap{width:min(var(--max),92vw);margin:auto}
+    nav{position:fixed;top:0;left:0;right:0;height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 4vw;z-index:10;color:var(--ink);mix-blend-mode:multiply;transition:background .3s,border-color .3s}
+    nav.scrolled{background:rgba(242,239,232,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+    .logo{font-size:.86rem;font-weight:700;letter-spacing:.22em}
+    .nav-links{display:flex;gap:2rem;list-style:none;font-size:.76rem}
+    .nav-links a{position:relative}.nav-links a:after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:1px;background:currentColor;transition:width .25s}.nav-links a:hover:after{width:100%}
+    .nav-shop{border:1px solid var(--ink);padding:.65rem 1rem;border-radius:999px;font-size:.72rem}
+    .hero{min-height:100svh;padding:110px 4vw 5vw;display:grid;grid-template-columns:minmax(280px,.8fr) minmax(360px,1.2fr);gap:7vw;align-items:end;max-width:var(--max);margin:auto}
+    .hero-copy{padding-bottom:2vw}.eyebrow{color:var(--muted);margin-bottom:1.4rem}.hero h1{font-size:clamp(4rem,8.2vw,8.7rem);font-weight:500;letter-spacing:-.075em;line-height:.88;max-width:800px}.hero h1 em{font-style:normal;color:var(--muted)}
+    .hero-intro{max-width:390px;color:#59564f;margin-top:2rem;font-size:1rem}.hero-link{display:inline-flex;align-items:center;gap:.8rem;margin-top:2.2rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em}.hero-link span{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--ink);border-radius:50%;transition:transform .25s}.hero-link:hover span{transform:translateY(3px)}
+    .hero-media{height:min(76svh,820px);position:relative;overflow:hidden;background:#ddd6c9}.hero-media video,.hero-media img{height:100%;object-fit:cover;object-position:center}.hero-meta{position:absolute;left:18px;right:18px;bottom:18px;display:flex;justify-content:space-between;color:white;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+    .media-fallback{display:none}
+    .ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:1rem 0}.ticker-track{display:inline-flex;gap:3rem;animation:marquee 26s linear infinite}.ticker span{font:400 .7rem 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.12em}.dot{width:4px;height:4px;background:var(--warm);border-radius:50%;display:inline-block;margin-left:3rem;vertical-align:middle}@keyframes marquee{to{transform:translateX(-50%)}}
+    section{padding:10vw 4vw}.section-head{max-width:var(--max);margin:0 auto 4vw;display:flex;justify-content:space-between;align-items:end;border-bottom:1px solid var(--line);padding-bottom:1.2rem}.section-head h2{font-size:clamp(2.2rem,4vw,4.6rem);font-weight:500;letter-spacing:-.055em;line-height:.95}.section-head p{max-width:310px;color:var(--muted);font-size:.82rem}
+    .collection{max-width:var(--max);margin:auto;display:grid;grid-template-columns:1fr 1fr;gap:7vw}.product:nth-child(2){margin-top:11vw}.product-media{position:relative;aspect-ratio:4/5;background:var(--soft);overflow:hidden}.product-media img,.product-media video{height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}.product:hover .product-media img,.product:hover .product-media video{transform:scale(1.025)}.product-index{position:absolute;top:14px;left:14px;background:rgba(242,239,232,.86);padding:.45rem .6rem;z-index:2}.product-body{display:grid;grid-template-columns:1fr auto;gap:1rem;padding-top:1.2rem;border-bottom:1px solid var(--line);padding-bottom:1.5rem}.product-title{font-size:1.55rem;font-weight:600;letter-spacing:-.035em}.product-type{color:var(--muted);font-size:.8rem;margin-top:.2rem}.product-desc{grid-column:1/-1;color:var(--muted);font-size:.83rem;max-width:450px}.product-cta{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;align-self:start;border-bottom:1px solid var(--ink);padding-bottom:4px}
+    .manifesto{background:var(--dark);color:var(--white);padding:13vw 4vw}.manifesto-inner{max-width:var(--max);margin:auto;display:grid;grid-template-columns:1fr 2fr;gap:7vw}.manifesto-label{color:#aaa69c}.manifesto h2{font-size:clamp(3rem,7vw,7.5rem);font-weight:400;letter-spacing:-.07em;line-height:.9}.manifesto p{color:#aaa69c;max-width:600px;margin-top:2.2rem;font-size:1rem}
+    .process{max-width:var(--max);margin:auto;display:grid;grid-template-columns:1.1fr .9fr;gap:8vw;align-items:start}.process-media{aspect-ratio:9/12;max-height:760px;background:#d9d2c5;overflow:hidden}.process-media video{height:100%;object-fit:cover}.process-copy h2{font-size:clamp(2.5rem,5vw,5.4rem);font-weight:500;letter-spacing:-.06em;line-height:.92;margin:1rem 0 3rem}.steps{border-top:1px solid var(--line)}.step{display:grid;grid-template-columns:70px 1fr;gap:1rem;padding:1.4rem 0;border-bottom:1px solid var(--line)}.step-no{color:var(--muted)}.step h3{font-size:.95rem;font-weight:600}.step p{font-size:.78rem;color:var(--muted);margin-top:.25rem;max-width:420px}
+    .studio{padding-bottom:6vw}.studio-box{max-width:var(--max);margin:auto;border-top:1px solid var(--line);padding-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:7vw}.studio-box h2{font-size:clamp(2.5rem,5vw,5.5rem);font-weight:500;letter-spacing:-.065em;line-height:.92}.studio-copy{color:var(--muted);max-width:470px}.studio-copy p+p{margin-top:1rem}.ig{display:inline-flex;margin-top:2rem;border-bottom:1px solid var(--ink);padding-bottom:.35rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+    footer{background:var(--dark);color:var(--white);padding:4vw}.footer-inner{max-width:var(--max);margin:auto;display:flex;justify-content:space-between;gap:2rem;align-items:end}.footer-logo{font-size:1rem;letter-spacing:.2em;font-weight:700}.footer-note{color:#8e8b83;font-size:.72rem;max-width:300px}.footer-links{display:flex;gap:1.5rem;font-size:.72rem;color:#b8b4aa}
+    @media(max-width:800px){nav{height:64px;padding:0 5vw}.nav-links{display:none}.nav-shop{padding:.55rem .8rem}.hero{padding:90px 5vw 12vw;display:flex;flex-direction:column;align-items:stretch;gap:2rem}.hero h1{font-size:clamp(4rem,18vw,7rem)}.hero-media{height:72svh;order:-1}.hero-copy{padding:0}.hero-intro{font-size:.9rem}.ticker-track{animation-duration:20s}section{padding:18vw 5vw}.section-head{display:block;margin-bottom:9vw}.section-head p{margin-top:1rem}.collection{display:block}.product:nth-child(2){margin-top:18vw}.product-body{grid-template-columns:1fr auto}.manifesto{padding:20vw 5vw}.manifesto-inner{display:block}.manifesto h2{margin-top:3rem}.process{display:flex;flex-direction:column;gap:3rem}.process-media{width:72vw;max-height:none}.process-copy h2{margin:1rem 0 2.5rem}.studio-box{display:block}.studio-box h2{margin-bottom:3rem}.footer-inner{display:block}.footer-links{margin-top:2rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ticker-track{animation:none}.product-media img,.product-media video{transition:none}}
   </style>
 </head>
 <body>
-
-  <nav>
-    <div class="logo">CURVE LAB</div>
-    <ul class="nav-links">
-      <li><a href="#collection">Collection</a></li>
-      <li><a href="#about">About Studio</a></li>
-    </ul>
+  <nav id="nav">
+    <a class="logo" href="#top">CURVE LAB</a>
+    <ul class="nav-links"><li><a href="#collection">Collection</a></li><li><a href="#process">Process</a></li><li><a href="#studio">Studio</a></li></ul>
+    <a class="nav-shop" href="#collection">Shop</a>
   </nav>
 
-  <section class="hero">
-    <div class="hero-tag">Algorithmic Lighting Studio</div>
-    <h1>Calculated Geometry. Ambient Illumination.</h1>
-    <p>3D-printed parametric lamps engineered to turn computational algorithms into warm, living light gradients.</p>
-    <a href="#collection" class="btn">Explore Collection</a>
-  </section>
-
-  <section class="section" id="collection">
-    <h2 class="section-title">The Lamp Collection</h2>
-    
-    <div class="catalog-grid">
-      
-      <!-- HELIX 01 -->
-      <div class="product-card">
-        <div>
-          <div class="product-image-wrap">
-            <img src="helix01.jpg" alt="Helix 01 Parametric Spiral Lamp">
-          </div>
-          <div class="product-info">
-            <h3>Helix 01</h3>
-            <div class="price">Parametric Spiral Lamp</div>
-            <p>A mesmerizing, computationally-generated spiral form. Delicate outer coils filter warm light into complex, dynamic ambient illumination.</p>
-            <ul class="features-list">
-              <li><span>✦</span> Precision spiral ribbed diffuser</li>
-              <li><span>✦</span> Warm dimmable LED ambiance</li>
-              <li><span>✦</span> Tactile wooden base accent</li>
-              <li><span>✦</span> 3D-printed in matte white polymer</li>
-            </ul>
-          </div>
-        </div>
-        <a href="https://wa.me/1234567890?text=Hi%20Curve%20Lab,%20I%20want%20to%20order%20the%20Helix%2001%20lamp." target="_blank" class="btn">Order Helix 01</a>
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow mono">Sculptural lighting / 01—2026</div>
+        <h1>Light,<br><em>shaped by</em><br>curves.</h1>
+        <p class="hero-intro">Objects born from computational geometry, refined by hand, and made layer by layer. Lighting designed to be felt as much as seen.</p>
+        <a class="hero-link" href="#collection">Explore the collection <span>↓</span></a>
       </div>
-
-      <!-- CALLA LILY -->
-      <div class="product-card">
-        <div>
-          <div class="product-image-wrap">
-            <img src="calla-lily.jpg" alt="Calla Lily Sculptural Folded Lamp">
-          </div>
-          <div class="product-info">
-            <h3>Calla Lily</h3>
-            <div class="price">Sculptural Folded Lamp</div>
-            <p>A graceful, organic folded sculptural shape inspired by nature. Layered translucent petals diffuse light softly into a calm interior accent.</p>
-            <ul class="features-list">
-              <li><span>✦</span> Organic organic-folding geometry</li>
-              <li><span>✦</span> Soft, diffused ambient glow</li>
-              <li><span>✦</span> Natural wooden base accent</li>
-              <li><span>✦</span> Hand-finished matte white polymer</li>
-            </ul>
-          </div>
-        </div>
-        <a href="https://wa.me/1234567890?text=Hi%20Curve%20Lab,%20I%20want%20to%20order%20the%20Calla%20Lily%20lamp." target="_blank" class="btn">Order Calla Lily</a>
+      <div class="hero-media">
+        <video autoplay muted loop playsinline preload="metadata" poster="calla-lily.jpg">
+          <source src="assets/videos/calla-lily.mp4" type="video/mp4">
+        </video>
+        <img class="media-fallback" src="calla-lily.jpg" alt="Calla Lily sculptural lamp">
+        <div class="hero-meta mono"><span>CALLA LILY</span><span>CURVE LAB / 2026</span></div>
       </div>
+    </section>
 
-    </div>
-  </section>
+    <div class="ticker"><div class="ticker-track"><span>Parametric design <i class="dot"></i></span><span>Small batch fabrication <i class="dot"></i></span><span>Ambient light <i class="dot"></i></span><span>Computational craft <i class="dot"></i></span><span>Parametric design <i class="dot"></i></span><span>Small batch fabrication <i class="dot"></i></span><span>Ambient light <i class="dot"></i></span><span>Computational craft <i class="dot"></i></span></div></div>
 
-  <section class="section" id="about">
-    <div class="about-card">
-      <h2>Where Mathematics Meets Illumination</h2>
-      <p>At Curve Lab, we start with code, mathematical curves, and computational geometry. By manipulating geometric rules, we sculpt fluid silhouettes and micro-textures that bend and soften light in ways traditional manufacturing cannot achieve.</p>
-      <p>Every piece is printed and assembled layer-by-layer in small batches, ensuring high precision with zero unnecessary material waste.</p>
-    </div>
-  </section>
+    <section id="collection">
+      <div class="section-head"><div><div class="mono">01 / Objects</div><h2>The collection</h2></div><p>Two studies in geometry, light and material. Produced in small batches rather than mass manufactured.</p></div>
+      <div class="collection">
+        <article class="product">
+          <div class="product-media"><span class="product-index mono">CL-H01</span><video autoplay muted loop playsinline preload="metadata" poster="helix01.jpg"><source src="assets/videos/helix01.mp4" type="video/mp4"></video></div>
+          <div class="product-body"><div><div class="product-title">Helix 01</div><div class="product-type">Parametric spiral lamp</div></div><a class="product-cta" href="#order">Enquire</a><p class="product-desc">A continuous spiral structure designed to filter a warm source through layers of precisely controlled geometry.</p></div>
+        </article>
+        <article class="product">
+          <div class="product-media"><span class="product-index mono">CL-C01</span><video autoplay muted loop playsinline preload="metadata" poster="calla-lily.jpg"><source src="assets/videos/calla-lily.mp4" type="video/mp4"></video></div>
+          <div class="product-body"><div><div class="product-title">Calla Lily</div><div class="product-type">Sculptural folded lamp</div></div><a class="product-cta" href="#order">Enquire</a><p class="product-desc">An organic folded volume translating the rhythm of a flower into a soft, architectural light object.</p></div>
+        </article>
+      </div>
+    </section>
 
-  <footer>
-    <p>© 2026 Curve Lab Studio. All rights reserved. Parametric Lighting & Computational Design.</p>
-  </footer>
+    <section class="manifesto"><div class="manifesto-inner"><div class="mono manifesto-label">The idea</div><div><h2>Where computation becomes something you can touch.</h2><p>Curve Lab treats the algorithm as a design tool, not a visual effect. Curves are generated, edited and refined until mathematics becomes a physical object with presence, texture and atmosphere.</p></div></div></section>
 
+    <section id="process">
+      <div class="section-head"><div><div class="mono">02 / Process</div><h2>From rule<br>to object.</h2></div><p>Digital control meets physical making. Every surface begins as a set of decisions.</p></div>
+      <div class="process">
+        <div class="process-media"><video autoplay muted loop playsinline preload="metadata" poster="helix01.jpg"><source src="assets/videos/helix-process.mp4" type="video/mp4"></video></div>
+        <div class="process-copy"><div class="mono">Helix 01 / development</div><h2>Designed in code.<br>Made in layers.</h2><div class="steps"><div class="step"><div class="step-no mono">01</div><div><h3>Generate</h3><p>Parametric curves establish the underlying geometry and rhythm.</p></div></div><div class="step"><div class="step-no mono">02</div><div><h3>Refine</h3><p>Proportion, thickness and light transmission are tuned through iteration.</p></div></div><div class="step"><div class="step-no mono">03</div><div><h3>Print</h3><p>The final geometry is fabricated layer by layer in small batches.</p></div></div><div class="step"><div class="step-no mono">04</div><div><h3>Illuminate</h3><p>A warm light source completes the relationship between structure and shadow.</p></div></div></div></div>
+      </div>
+    </section>
+
+    <section class="studio" id="studio"><div class="studio-box"><div><div class="mono">03 / Studio</div><h2>A small design studio for curious spaces.</h2></div><div class="studio-copy"><p>Curve Lab creates sculptural objects at the intersection of industrial design, computational geometry and digital fabrication.</p><p>We are interested in pieces that feel quiet at first, then reveal their construction as you move around them.</p><a class="ig" href="https://www.instagram.com/curvelab.design/" target="_blank" rel="noopener">Follow @curvelab.design ↗</a></div></div></section>
+
+    <section id="order" style="padding-top:3vw;padding-bottom:8vw"><div class="wrap" style="border-top:1px solid var(--line);padding-top:2rem;display:flex;justify-content:space-between;gap:2rem;align-items:end"><div><div class="mono">Collection / Availability</div><h2 style="font-size:clamp(2rem,4vw,4rem);font-weight:500;letter-spacing:-.05em;margin-top:.7rem">Interested in a piece?</h2></div><a class="product-cta" href="https://www.instagram.com/curvelab.design/" target="_blank" rel="noopener">Contact the studio ↗</a></div></section>
+  </main>
+
+  <footer><div class="footer-inner"><div><div class="footer-logo">CURVE LAB</div><div class="footer-note" style="margin-top:.7rem">Sculptural lighting / computational design / Tunisia</div></div><div class="footer-links"><a href="#collection">Collection</a><a href="#process">Process</a><a href="https://www.instagram.com/curvelab.design/" target="_blank" rel="noopener">Instagram</a></div></div></footer>
+  <script>const nav=document.getElementById('nav');addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20),{passive:true});document.querySelectorAll('video').forEach(v=>v.addEventListener('error',()=>{const f=v.nextElementSibling;if(f&&f.classList.contains('media-fallback'))f.style.display='block';},{once:true}));</script>
 </body>
 </html>
