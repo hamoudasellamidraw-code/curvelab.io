@@ -16,16 +16,18 @@ function buildGeometry(p,quality='full'){
   return taper*(.70+.30*Math.sin(Math.PI*t));
  }
  function displacement(a,t){if(relief==='smooth')return 0;const s=strength*freq;
+  // Angular frequencies must be integers so every relief closes exactly at 2π.
+  const count=(n)=>Math.max(1,Math.round(n*freq));
   if(relief==='flutes')return Math.cos(a*p.ribs+tw*t*1.6)*p.depth*.5;
-  if(relief==='spiral')return Math.cos(a*7*freq-t*16*freq+tw*t)*p.depth*.8*s;
-  if(relief==='diamond')return Math.cos(a*11*freq)*Math.cos(t*h*.10*freq)*p.depth*.8*s;
-  if(relief==='scales')return Math.cos(a*15*freq+Math.sin(t*h*.07*freq)*1.5)*Math.cos(t*h*.09*freq)*p.depth*.7*s;
-  if(relief==='waves')return Math.sin(a*5*freq+Math.sin(t*11*freq)*2.2)*p.depth*.8*s;
-  if(relief==='organic')return (Math.sin(a*8*freq+Math.sin(t*17*freq)*1.5)+.5*Math.sin(a*13*freq-t*23*freq))*p.depth*.48*s;
-  if(relief==='knurl')return Math.sin(a*18*freq)*Math.sin(t*h*.14*freq)*p.depth*.75*s;
-  if(relief==='pebbles')return Math.cos(a*13*freq+Math.sin(t*19*freq)*.8)*Math.cos(t*h*.12*freq)*p.depth*.6*s;
-  if(relief==='contours')return Math.sin(t*h*.16*freq+Math.sin(a*4*freq)*1.4)*p.depth*.8*s;
-  if(relief==='checker')return Math.tanh(5*Math.sin(a*12*freq)*Math.sin(t*h*.13*freq))*p.depth*.42*s;
+  if(relief==='spiral')return Math.cos(a*count(7)-t*16*freq+tw*t)*p.depth*.8*s;
+  if(relief==='diamond')return Math.cos(a*count(11))*Math.cos(t*h*.10*freq)*p.depth*.8*s;
+  if(relief==='scales')return Math.cos(a*count(15)+Math.sin(t*h*.07*freq)*1.5)*Math.cos(t*h*.09*freq)*p.depth*.7*s;
+  if(relief==='waves')return Math.sin(a*count(5)+Math.sin(t*11*freq)*2.2)*p.depth*.8*s;
+  if(relief==='organic')return (Math.sin(a*count(8)+Math.sin(t*17*freq)*1.5)+.5*Math.sin(a*count(13)-t*23*freq))*p.depth*.48*s;
+  if(relief==='knurl')return Math.sin(a*count(18))*Math.sin(t*h*.14*freq)*p.depth*.75*s;
+  if(relief==='pebbles')return Math.cos(a*count(13)+Math.sin(t*19*freq)*.8)*Math.cos(t*h*.12*freq)*p.depth*.6*s;
+  if(relief==='contours')return Math.sin(t*h*.16*freq+Math.sin(a*count(4))*1.4)*p.depth*.8*s;
+  if(relief==='checker')return Math.tanh(5*Math.sin(a*count(12))*Math.sin(t*h*.13*freq))*p.depth*.42*s;
   return 0;
  }
  function addRingSurface(rings,segments,cap=true){const start=pos.length/3,stride=segments+1;
@@ -68,10 +70,17 @@ function buildGeometry(p,quality='full'){
  for(let i=0;i<indices.length;i+=3){const a=indices[i]*3,b=indices[i+1]*3,c=indices[i+2]*3,ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2],vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
   for(const o of [a,b,c]){normals[o]+=nx;normals[o+1]+=ny;normals[o+2]+=nz;}}
  for(let i=0;i<normals.length;i+=3){const l=Math.hypot(normals[i],normals[i+1],normals[i+2])||1;normals[i]/=l;normals[i+1]/=l;normals[i+2]/=l;}
- // The first and last angular samples occupy the same point. Match their normals
- // explicitly so smooth shading cannot reveal a vertical seam.
+ // The first and last angular samples occupy the same point. Match normals
+ // across the seam on both the shade and pedestal to avoid a shading discontinuity.
  for(let layer=0;layer<2;layer++)for(let j=0;j<=M;j++){
   const a=(layer*layerSize+j*stride)*3,b=(layer*layerSize+j*stride+N)*3;
+  normals[b]=normals[a];normals[b+1]=normals[a+1];normals[b+2]=normals[a+2];
+ }
+ const baseStart=layerSize*2;
+ const baseStride=N+1;
+ const baseRingCount=rings.length;
+ for(let j=0;j<baseRingCount;j++){
+  const a=(baseStart+j*baseStride)*3,b=(baseStart+j*baseStride+N)*3;
   normals[b]=normals[a];normals[b+1]=normals[a+1];normals[b+2]=normals[a+2];
  }
  return {positions,normals,uvs,indices,radial:N,rows:M};
