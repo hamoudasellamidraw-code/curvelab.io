@@ -11,34 +11,37 @@ class ThreeRenderer {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.15;
+    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#090a09');
-    this.scene.fog = new THREE.Fog('#090a09', 900, 2200);
+    this.scene.background = new THREE.Color('#171916');
+    this.scene.fog = new THREE.Fog('#171916', 1000, 2400);
     this.camera = new THREE.PerspectiveCamera(34, 1, .1, 2500);
-    this.scene.add(new THREE.HemisphereLight(0xffffff, 0x9c9588, 2.1));
-    this.key = new THREE.DirectionalLight(0xfff3df, 3.3);
+    this.scene.add(new THREE.HemisphereLight(0xf7f3e9, 0x5b6058, 1.35));
+    this.key = new THREE.DirectionalLight(0xfff1dc, 3.0);
     this.key.position.set(-220, 300, 250);
     this.key.castShadow = true;
-    this.key.shadow.mapSize.set(1024, 1024);
+    this.key.shadow.mapSize.set(2048, 2048);
     this.key.shadow.bias = -.0003;
     this.key.shadow.normalBias = .15;
     this.scene.add(this.key, this.key.target);
-    const fill = new THREE.DirectionalLight(0xd6e4ff, 1.7);
-    fill.position.set(250, 100, 80);
-    const rim = new THREE.DirectionalLight(0xffffff, 2.4);
-    rim.position.set(0, 180, -260);
-    this.scene.add(fill, rim);
+    const fill = new THREE.DirectionalLight(0xd6e4ff, 1.05);
+    fill.position.set(250, 100, 180);
+    const rim = new THREE.DirectionalLight(0xffdfb8, 1.8);
+    rim.position.set(0, 240, -260);
+    const softbox = new THREE.DirectionalLight(0xffffff, 0.65);
+    softbox.position.set(-180, 60, -100);
+    this.scene.add(fill, rim, softbox);
     this.floor = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400),
-      new THREE.MeshStandardMaterial({ color: '#090a09', roughness: 1 }));
+      new THREE.MeshStandardMaterial({ color: '#20221e', roughness: .92, metalness: 0 }));
     this.floor.rotation.x = -Math.PI / 2;
     this.floor.receiveShadow = true;
     this.scene.add(this.floor);
     this.material = new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true,
-      metalness: 0, roughness: .88, side: THREE.DoubleSide });
+      metalness: 0, roughness: .74, side: THREE.DoubleSide });
     this.lamp = new THREE.Mesh(new THREE.BufferGeometry(), this.material);
     this.lamp.castShadow = true;
     this.lamp.receiveShadow = true;
@@ -98,7 +101,7 @@ class ThreeRenderer {
     const material = this.material;
     material.color.setRGB(1, 1, 1);
     material.wireframe = state.wire;
-    material.roughness = .88;
+    material.roughness = state.studio ? .72 : .9;
     let texture = null;
     if (state.texture !== 'smooth') {
       if (!this.textures.has(state.texture)) {
@@ -119,7 +122,7 @@ class ThreeRenderer {
     // is enabled/disabled. Cached textures survive geometry and preset changes.
     if (Boolean(material.bumpMap) !== Boolean(texture)) material.needsUpdate = true;
     material.bumpMap = texture;
-    material.bumpScale = state.textureStrength * 1.4;
+    material.bumpScale = state.textureStrength * 0.55;
     this.lastMaterial = signature;
   }
 
