@@ -123,7 +123,9 @@ select{min-height:44px;padding:11px!important;font-size:14px}
     <button class="swatch" data-part="base" data-color="#657a91" style="background:#657a91" aria-label="Base blue grey" title="Blue grey"></button>
     <button class="swatch" data-part="base" data-color="#171916" style="background:#171916" aria-label="Base near black" title="Near black"></button>
   </div></div>
-  <div class="sectionTitle">07 / Surface finish</div>
+  <div class="sectionTitle">07 / Material finish</div>
+  <div class="control"><div class="controlHead"><label for="finish">Material response</label></div><select id="finish" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px"><option value="matte">Matte 3D-printed polymer</option><option value="satin">Satin polymer</option><option value="ceramic">Glazed ceramic</option><option value="stone">Mineral / stone texture</option></select><p class="hint">Changes roughness, reflections and surface detail in studio mode.</p></div>
+  <div class="sectionTitle">08 / Surface texture</div>
   <div class="control"><div class="controlHead"><label for="texture">Texture pattern</label></div><select id="texture" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px"><option value="micrograin">Micrograin · satin</option><option value="striated">Fine striations</option><option value="linen">Woven / linen</option><option value="stippling">Stippled matte</option><option value="ripple">Organic ripple</option><option value="smooth">Smooth finish</option></select></div>
   <div class="control"><div class="controlHead"><label for="textureScale">Texture scale</label><span class="value" id="textureScaleV">1.0×</span></div><input id="textureScale" type="range" min="0.5" max="4" value="1" step="0.1"></div>
   <div class="control"><div class="controlHead"><label for="textureStrength">Texture intensity</label><span class="value" id="textureStrengthV">0.35</span></div><input id="textureStrength" type="range" min="0" max="1" value="0.35" step="0.05"></div>
@@ -134,7 +136,7 @@ select{min-height:44px;padding:11px!important;font-size:14px}
   <canvas id="scene" tabindex="0" role="img" aria-label="3D lampshade preview. Drag or use arrow keys to orbit; scroll or use plus and minus to zoom."></canvas>
   <div class="viewLabel"><div class="eyebrow">FORM STUDY / 001</div><h1>Ripple No. 01</h1><p>Parametric shade · Made to be printed</p></div>
   <p id="renderNotice" class="hint" hidden style="position:absolute;bottom:62px;left:20px;right:20px">Surface textures and shadows are unavailable in this simplified preview.</p>
-  <div class="viewTools"><button class="iconBtn" id="homeView">⌂ &nbsp; Home view</button><button class="iconBtn" id="wireBtn" aria-pressed="false">◇ &nbsp; Wireframe</button><button class="iconBtn active" id="renderBtn" aria-pressed="true">✦ &nbsp; Render preview</button></div>
+  <div class="viewTools"><button class="iconBtn" id="homeView">⌂ &nbsp; Home view</button><button class="iconBtn" id="wireBtn" aria-pressed="false">◇ &nbsp; Wireframe</button><button class="iconBtn active" id="renderBtn" aria-pressed="true">✦ &nbsp; Studio</button><button class="iconBtn" id="saveRenderBtn">↓ &nbsp; Save image</button></div>
   <div class="bottomBar"><div><strong>DRAG</strong> to orbit &nbsp; / &nbsp; <strong>CTRL + SCROLL</strong> to zoom</div></div>
 </section>
 <aside class="right">
