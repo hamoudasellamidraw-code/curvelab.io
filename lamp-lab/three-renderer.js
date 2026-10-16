@@ -148,13 +148,13 @@ class ThreeRenderer {
       this.renderer.shadowMap.needsUpdate = true;
       this.lastPose = pose;
     }
-    const cameraState = [size, params.height, params.diameter, params.depth, state.zoom].join('|');
+    const cameraState = [size, params.height, params.baseHeight, params.diameter, params.baseDiameter, params.depth, state.zoom].join('|');
     if (cameraState !== this.lastCamera) {
-      const radius = Math.hypot(params.height * .5, params.diameter * .7 + params.depth);
+      const fullHeight = params.height + (params.baseHeight || 28);\n      const fullDiameter = Math.max(params.diameter, params.baseDiameter || 90);\n      const radius = Math.hypot(fullHeight * .5, fullDiameter * .7 + params.depth);
       const halfFov = THREE.MathUtils.degToRad(this.camera.fov * .5);
       const fitAngle = Math.min(halfFov, Math.atan(Math.tan(halfFov) * this.camera.aspect));
       const distance = radius / Math.sin(fitAngle) * 1.12;
-      this.camera.position.set(1.55 * params.diameter, params.height * .38 + 40, 2.35 * params.diameter + 80).normalize().multiplyScalar(distance);
+      this.camera.position.set(1.55 * fullDiameter, fullHeight * .30 + 30, 2.35 * fullDiameter + 80).normalize().multiplyScalar(distance);
       this.camera.lookAt(0, 0, 0);
       this.camera.zoom = state.zoom;
       this.camera.updateProjectionMatrix();
