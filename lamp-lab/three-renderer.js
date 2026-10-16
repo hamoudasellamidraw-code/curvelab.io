@@ -150,7 +150,9 @@ class ThreeRenderer {
     }
     const cameraState = [size, params.height, params.baseHeight, params.diameter, params.baseDiameter, params.depth, state.zoom].join('|');
     if (cameraState !== this.lastCamera) {
-      const fullHeight = params.height + (params.baseHeight || 28);\n      const fullDiameter = Math.max(params.diameter, params.baseDiameter || 90);\n      const radius = Math.hypot(fullHeight * .5, fullDiameter * .7 + params.depth);
+      const fullHeight = params.height + (params.baseHeight || 28);
+      const fullDiameter = Math.max(params.diameter, params.baseDiameter || 90);
+      const radius = Math.hypot(fullHeight * .5, fullDiameter * .7 + params.depth);
       const halfFov = THREE.MathUtils.degToRad(this.camera.fov * .5);
       const fitAngle = Math.min(halfFov, Math.atan(Math.tan(halfFov) * this.camera.aspect));
       const distance = radius / Math.sin(fitAngle) * 1.12;
