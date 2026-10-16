@@ -49,7 +49,9 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
     <button class="preset" data-preset="taper">03 &nbsp; Taper</button>
     <button class="preset" data-preset="orb">04 &nbsp; Orb</button>
   </div>
-  <div class="sectionTitle">02 / Geometry</div>
+  <div class="sectionTitle">02 / Overall form</div>
+  <div class="control"><div class="controlHead"><label for="shape">Lamp silhouette</label></div><select id="shape" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px"><option value="mushroom">Mushroom</option><option value="rounded" selected>Rounded / organic</option><option value="square">Square / soft cube</option><option value="cone">Tapered cone</option><option value="cylinder">Straight cylinder</option></select></div>
+  <div class="sectionTitle">03 / Geometry</div>
   <div class="control"><div class="controlHead"><label for="height">Overall height</label><span class="value" id="heightV">220 mm</span></div><input id="height" type="range" min="100" max="320" value="220" step="5"></div>
   <div class="control"><div class="controlHead"><label for="diameter">Maximum diameter</label><span class="value" id="diameterV">160 mm</span></div><input id="diameter" type="range" min="90" max="240" value="160" step="5"></div>
   <div class="control"><div class="controlHead"><label for="ribs">Rib count</label><span class="value" id="ribsV">24</span></div><input id="ribs" type="range" min="6" max="64" value="24" step="1"></div>
@@ -58,11 +60,19 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
   <div class="control"><div class="controlHead"><label for="taper">Taper</label><span class="value" id="taperV">18%</span></div><input id="taper" type="range" min="-35" max="45" value="18" step="1"></div>
   <div class="control"><div class="controlHead"><label for="wall">Wall thickness</label><span class="value" id="wallV">1.6 mm</span></div><input id="wall" type="range" min="0.8" max="3.2" value="1.6" step=".2"></div>
   <div class="control"><div class="controlHead"><label for="base">Base opening</label><span class="value" id="baseV">42 mm</span></div><input id="base" type="range" min="25" max="70" value="42" step="1"></div>
-  <div class="sectionTitle">03 / Surface finish</div>
+  <div class="sectionTitle">04 / 3D surface relief</div>
+  <div class="control"><div class="controlHead"><label for="relief">Relief pattern</label></div><select id="relief" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px"><option value="flutes">Flutes / ribs</option><option value="spiral">Spiral grooves</option><option value="diamond">Diamond lattice</option><option value="scales">Scales</option><option value="waves">Flowing waves</option><option value="organic">Organic topography</option><option value="knurl">Knurled grid</option><option value="smooth">No relief</option></select></div>
+  <div class="control"><div class="controlHead"><label for="reliefScale">Relief frequency</label><span class="value" id="reliefScaleV">1.0×</span></div><input id="reliefScale" type="range" min="0.4" max="3" value="1" step="0.1"></div>
+  <div class="control"><div class="controlHead"><label for="reliefStrength">Relief depth</label><span class="value" id="reliefStrengthV">0.50</span></div><input id="reliefStrength" type="range" min="0" max="1.5" value="0.5" step="0.05"></div>
+  <div class="sectionTitle">05 / Lamp base</div>
+  <div class="control"><div class="controlHead"><label for="baseStyle">Base profile</label></div><select id="baseStyle" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px"><option value="disc">Soft disc</option><option value="cylinder">Cylinder</option><option value="cone">Flared cone</option><option value="hourglass">Hourglass</option></select></div>
+  <div class="control"><div class="controlHead"><label for="baseHeight">Base height</label><span class="value" id="baseHeightV">28 mm</span></div><input id="baseHeight" type="range" min="12" max="70" value="28" step="2"></div>
+  <div class="control"><div class="controlHead"><label for="baseDiameter">Base diameter</label><span class="value" id="baseDiameterV">90 mm</span></div><input id="baseDiameter" type="range" min="50" max="180" value="90" step="5"></div>
+  <div class="sectionTitle">06 / Surface finish</div>
   <div class="control"><div class="controlHead"><label for="texture">Texture pattern</label></div><select id="texture" style="width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:10px"><option value="micrograin">Micrograin · satin</option><option value="striated">Fine striations</option><option value="linen">Woven / linen</option><option value="stippling">Stippled matte</option><option value="ripple">Organic ripple</option><option value="smooth">Smooth finish</option></select></div>
   <div class="control"><div class="controlHead"><label for="textureScale">Texture scale</label><span class="value" id="textureScaleV">1.0×</span></div><input id="textureScale" type="range" min="0.5" max="4" value="1" step="0.1"></div>
   <div class="control"><div class="controlHead"><label for="textureStrength">Texture intensity</label><span class="value" id="textureStrengthV">0.35</span></div><input id="textureStrength" type="range" min="0" max="1" value="0.35" step="0.05"></div>
-  <p class="hint">Surface texture is for visual preview; it does not add physical micro-detail to the exported STL.</p>
+  <p class="hint">Relief patterns change the actual mesh and are included in the STL. Fine finish textures affect shading only.</p>
   <p class="hint">All dimensions are in millimeters. Changes update the live preview.</p>
 </aside>
 <section class="viewer renderMode">
