@@ -1,4 +1,5 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { RoomEnvironment } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/environments/RoomEnvironment.js';
 
 export function createThreeRenderer(canvas, invalidate) {
   return new ThreeRenderer(canvas, invalidate);
@@ -18,6 +19,10 @@ class ThreeRenderer {
     this.renderer.shadowMap.autoUpdate = false;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color('#171916');
+    this.pmrem = new THREE.PMREMGenerator(this.renderer);
+    this.environment = this.pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    this.scene.environment = this.environment;
+    this.scene.environmentIntensity = 0.8;
     this.scene.fog = new THREE.Fog('#171916', 1000, 2400);
     this.camera = new THREE.PerspectiveCamera(34, 1, .1, 2500);
     this.scene.add(new THREE.HemisphereLight(0xf7f3e9, 0x5b6058, 1.35));
@@ -41,7 +46,7 @@ class ThreeRenderer {
     this.floor.receiveShadow = true;
     this.scene.add(this.floor);
     this.material = new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true,
-      metalness: 0, roughness: .74, side: THREE.DoubleSide });
+      metalness: 0, roughness: .78, side: THREE.DoubleSide, envMapIntensity: 0.8 });
     this.lamp = new THREE.Mesh(new THREE.BufferGeometry(), this.material);
     this.lamp.castShadow = true;
     this.lamp.receiveShadow = true;
@@ -96,12 +101,21 @@ class ThreeRenderer {
 
   updateMaterial(state) {
     const signature = [state.color, state.baseColor, state.studio, state.wire, state.texture,
-      state.textureScale, state.textureStrength].join('|');
+      state.textureScale, state.textureStrength, state.finish].join('|');
     if (signature === this.lastMaterial) return;
     const material = this.material;
     material.color.setRGB(1, 1, 1);
     material.wireframe = state.wire;
-    material.roughness = state.studio ? .72 : .9;
+    const finishes = {
+      matte: { roughness: .9, metalness: 0, bump: .42, env: .45 },
+      satin: { roughness: .62, metalness: 0, bump: .3, env: .75 },
+      ceramic: { roughness: .28, metalness: 0, bump: .12, env: 1.15 },
+      stone: { roughness: .96, metalness: 0, bump: .72, env: .35 }
+    };
+    const finish = finishes[state.finish || 'matte'];
+    material.roughness = state.studio ? finish.roughness : .92;
+    material.metalness = finish.metalness;
+    material.envMapIntensity = state.studio ? finish.env : .3;
     let texture = null;
     if (state.texture !== 'smooth') {
       if (!this.textures.has(state.texture)) {
@@ -122,7 +136,7 @@ class ThreeRenderer {
     // is enabled/disabled. Cached textures survive geometry and preset changes.
     if (Boolean(material.bumpMap) !== Boolean(texture)) material.needsUpdate = true;
     material.bumpMap = texture;
-    material.bumpScale = state.textureStrength * 0.55;
+    material.bumpScale = state.textureStrength * finish.bump;
     this.lastMaterial = signature;
   }
 
