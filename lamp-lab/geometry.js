@@ -64,7 +64,7 @@ function buildGeometry(p,quality='full'){
  else if(style==='faceted')rings=[{y:y0,r:bd*.4},{y:y0+bh*.25,r:bd*.5},{y:y1-bh*.12,r:bd*.48},{y:y1,r:inner}];
  else rings=[{y:y0,r:bd*.42},{y:y0+bh*.12,r:bd*.5},{y:y1-bh*.12,r:bd*.5},{y:y1,r:inner}];
  addRingSurface(rings,N,true);
- const positions=new Float32Array(pos),uvs=new Float32Array(uv),indices=new Uint32Array(idx),normals=new Float32Array(positions.length);
+ const positions=new Float32Array(pos),uvs=new Float32Array(uv),indices=new Uint16Array(idx),normals=new Float32Array(positions.length);
  for(let i=0;i<indices.length;i+=3){const a=indices[i]*3,b=indices[i+1]*3,c=indices[i+2]*3,ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2],vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
   for(const o of [a,b,c]){normals[o]+=nx;normals[o+1]+=ny;normals[o+2]+=nz;}}
  for(let i=0;i<normals.length;i+=3){const l=Math.hypot(normals[i],normals[i+1],normals[i+2])||1;normals[i]/=l;normals[i+1]/=l;normals[i+2]/=l;}
