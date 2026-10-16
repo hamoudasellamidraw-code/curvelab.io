@@ -6,7 +6,11 @@ function buildGeometry(p,quality='full'){
  const shape=p.shape||'rounded',relief=p.relief||'flutes',freq=Number(p.reliefScale||1),strength=Number(p.reliefStrength??.5);
  function profile(t){const taper=1-p.taper*.0045+p.taper*.009*t;
   if(shape==='mushroom')return taper*(.58+.42*Math.min(1,t*2.4))*(t>.58?1+.23*Math.sin(Math.PI*(t-.58)/.42):1);
-  if(shape==='square')return taper*(.94+.06*Math.sin(Math.PI*t));
+  if(shape==='square'||shape==='faceted')return taper*(.94+.06*Math.sin(Math.PI*t));
+  if(shape==='bell')return taper*(.55+.45*t)*(1+.15*Math.sin(Math.PI*t));
+  if(shape==='bulb')return taper*(.58+.42*Math.sin(Math.PI*t));
+  if(shape==='hourglass')return taper*(.72+.22*Math.cos((t-.5)*Math.PI*2));
+
   if(shape==='cone')return taper*(.52+.48*t);
   if(shape==='cylinder')return taper;
   return taper*(.70+.30*Math.sin(Math.PI*t));
@@ -19,11 +23,14 @@ function buildGeometry(p,quality='full'){
   if(relief==='waves')return Math.sin(a*5*freq+Math.sin(t*11*freq)*2.2)*p.depth*.8*s;
   if(relief==='organic')return (Math.sin(a*8*freq+Math.sin(t*17*freq)*1.5)+.5*Math.sin(a*13*freq-t*23*freq))*p.depth*.48*s;
   if(relief==='knurl')return Math.sin(a*18*freq)*Math.sin(t*h*.14*freq)*p.depth*.75*s;
+  if(relief==='pebbles')return Math.cos(a*13*freq+Math.sin(t*19*freq)*.8)*Math.cos(t*h*.12*freq)*p.depth*.6*s;
+  if(relief==='contours')return Math.sin(t*h*.16*freq+Math.sin(a*4*freq)*1.4)*p.depth*.8*s;
+  if(relief==='checker')return Math.sign(Math.sin(a*12*freq)*Math.sin(t*h*.13*freq))*p.depth*.42*s;
   return 0;
  }
  function addRingSurface(rings,segments,cap=true){const start=pos.length/3,stride=segments+1;
   rings.forEach((ring,j)=>{for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2;let r=ring.r;
-   if(baseShape==='square'){const co=Math.cos(a),si=Math.sin(a),e=.55;r*=Math.pow(Math.pow(Math.abs(co),2/e)+Math.pow(Math.abs(si),2/e),-e/2);}
+   if(baseShape==='square'||baseShape==='faceted'){const co=Math.cos(a),si=Math.sin(a),e=baseShape==='faceted'?.18:.55;r*=Math.pow(Math.pow(Math.abs(co),2/e)+Math.pow(Math.abs(si),2/e),-e/2);}
    if(baseRelief!=='smooth'&&j>0&&j<rings.length-1){let q=0;
     if(baseRelief==='flutes')q=Math.cos(a*Number(p.baseRibs||24));
     else if(baseRelief==='spiral')q=Math.cos(a*7-(j/(rings.length-1))*8);
@@ -40,7 +47,7 @@ function buildGeometry(p,quality='full'){
  const start=0,stride=N+1,layerSize=stride*(M+1);
  for(let layer=0;layer<2;layer++)for(let j=0;j<=M;j++){const t=j/M,baseR=d*.5*profile(t);for(let i=0;i<=N;i++){
   const a=i/N*Math.PI*2;let r=baseR+displacement(a,t);
-  if(shape==='square'){const c=Math.cos(a),s=Math.sin(a),e=.55;r*=Math.pow(Math.pow(Math.abs(c),2/e)+Math.pow(Math.abs(s),2/e),-e/2);}
+  if(shape==='square'||shape==='faceted'){const c=Math.cos(a),s=Math.sin(a),e=shape==='faceted'?.18:.55;r*=Math.pow(Math.pow(Math.abs(c),2/e)+Math.pow(Math.abs(s),2/e),-e/2);}
   if(layer)r-=p.wall;r=Math.max(layer?p.base*.5:p.base*.5+p.wall+1,r);
   pos.push(Math.cos(a+tw*t)*r,(t-.5)*h,Math.sin(a+tw*t)*r);uv.push(i/N,t);
  }}
@@ -52,6 +59,9 @@ function buildGeometry(p,quality='full'){
  if(style==='cone')rings=[{y:y0,r:bd*.31},{y:y0+bh*.18,r:bd*.5},{y:y1-bh*.12,r:bd*.4},{y:y1,r:inner}];
  else if(style==='hourglass')rings=[{y:y0,r:bd*.42},{y:y0+bh*.25,r:bd*.5},{y:y0+bh*.62,r:bd*.31},{y:y1-bh*.12,r:bd*.36},{y:y1,r:inner}];
  else if(style==='cylinder')rings=[{y:y0,r:bd*.5},{y:y1,r:inner}];
+ else if(style==='bell')rings=[{y:y0,r:bd*.32},{y:y0+bh*.2,r:bd*.42},{y:y0+bh*.68,r:bd*.5},{y:y1-bh*.1,r:bd*.44},{y:y1,r:inner}];
+ else if(style==='bulb')rings=[{y:y0,r:bd*.32},{y:y0+bh*.25,r:bd*.48},{y:y0+bh*.55,r:bd*.5},{y:y1-bh*.1,r:bd*.35},{y:y1,r:inner}];
+ else if(style==='faceted')rings=[{y:y0,r:bd*.4},{y:y0+bh*.25,r:bd*.5},{y:y1-bh*.12,r:bd*.48},{y:y1,r:inner}];
  else rings=[{y:y0,r:bd*.42},{y:y0+bh*.12,r:bd*.5},{y:y1-bh*.12,r:bd*.5},{y:y1,r:inner}];
  addRingSurface(rings,N,true);
  const positions=new Float32Array(pos),uvs=new Float32Array(uv),indices=new Uint32Array(idx),normals=new Float32Array(positions.length);
