@@ -12,7 +12,7 @@
   const inputs = Object.fromEntries(Object.keys(presets.ripple).map(id => [id, $('#' + id)]));
   const values = Object.fromEntries(Object.keys(inputs).map(id => [id, $('#' + id + 'V')]));
   const state = { yaw: .55, pitch: .12, zoom: 1, wire: false, studio: true, color: [233 / 255, 227 / 255, 213 / 255], baseColor: [52 / 255, 56 / 255, 50 / 255],
-    texture: 'micrograin', textureScale: 1, textureStrength: .35 };
+    texture: 'micrograin', textureScale: 1, textureStrength: .35, finish: 'matte' };
   let preset = 'ripple', params, mesh, geometryDirty = true, frame = null;
   let pointer = null, lastX = 0, lastY = 0;
   const renderer = await LampRenderer.createStudioRenderer($('#scene'), requestDraw);
@@ -77,6 +77,7 @@
   ['shape','relief','reliefScale','reliefStrength','baseStyle','baseShape','baseRelief','baseReliefDepth','baseRibs','baseHeight','baseDiameter'].forEach(id => {
     $('#' + id).addEventListener(['shape','relief','baseStyle','baseShape','baseRelief'].includes(id) ? 'change' : 'input', readControls);
   });
+  $('#finish').addEventListener('change', () => { state.finish = $('#finish').value; requestDraw(); });
   function readSurface() {
     state.texture = $('#texture').value;
     state.textureScale = Number($('#textureScale').value);
@@ -107,7 +108,7 @@
     state.studio = !state.studio;
     $('.viewer').classList.toggle('renderMode', state.studio);
     $('#renderBtn').classList.toggle('active', state.studio);
-    $('#renderBtn').textContent = state.studio ? '✦  Render preview' : '◌  Draft preview';
+    $('#renderBtn').textContent = state.studio ? '✦  Studio' : '◌  Draft';
     $('#renderBtn').setAttribute('aria-pressed', String(state.studio));
     requestDraw();
   });
@@ -171,6 +172,19 @@
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
+  $('#saveRenderBtn').addEventListener('click', () => {
+    requestDraw();
+    requestAnimationFrame(() => {
+      canvas.toBlob(blob => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob), link = document.createElement('a');
+        link.href = url;
+        link.download = 'curve-lab-studio-render.png';
+        document.body.appendChild(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }, 'image/png');
+    });
+  });
   $('#exportTop').addEventListener('click', exportSTL);
   $('#exportBottom').addEventListener('click', exportSTL);
   if (typeof ResizeObserver !== 'undefined') new ResizeObserver(requestDraw).observe(canvas);
