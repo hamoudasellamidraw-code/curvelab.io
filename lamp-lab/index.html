@@ -31,7 +31,39 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
 .printBtn{width:100%;margin-top:22px}.footerNote{font-size:10px;color:var(--muted);line-height:1.6;margin-top:14px}
 @media(max-width:1180px){.viewTools{top:100px}}
 @media(max-width:1050px){main{height:calc(100vh - 70px);grid-template-columns:270px minmax(0,1fr)}.right{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:18px 22px}.right .sectionTitle{grid-column:1/-1;margin-bottom:0}.metric{border-bottom:0}.infoCard{margin-top:0}.printBtn{margin-top:0}}
-@media(max-width:700px){.app{grid-template-rows:60px 1fr}header{padding:0 14px}main{display:flex;flex-direction:column;height:calc(100dvh - 60px);overflow:hidden}.viewer{order:0;flex:0 0 46dvh;min-height:280px;height:46dvh}.left{order:1;flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;border-right:0;border-top:1px solid var(--line)}.right{order:2;display:block;flex:0 0 auto;max-height:28dvh;overflow-y:auto;overscroll-behavior:contain}.right .sectionTitle{margin-bottom:10px}.metric{padding:10px 0}.viewLabel{left:15px;top:15px}.viewLabel h1{font-size:20px}.headerRight .btn{padding:9px 10px}.brand{font-size:11px}}
+@media(max-width:700px){
+.app{grid-template-rows:64px 1fr}
+header{padding:0 12px;gap:8px}
+.brand{font-size:10px;letter-spacing:.1em;gap:8px;min-width:0}
+.brand small{font-size:8px;letter-spacing:.12em}
+.mark{width:30px;height:30px;flex:0 0 30px}
+.headerRight{gap:7px}
+.headerRight .btn{min-height:44px;padding:10px 11px;font-size:12px;white-space:nowrap}
+main{display:flex;flex-direction:column;height:calc(100dvh - 64px);overflow:hidden}
+.viewer{order:0;flex:0 0 40dvh;min-height:250px;height:40dvh}
+.left{order:1;flex:1 1 auto;min-height:0;max-height:none;padding:22px 18px 36px;overflow-y:auto;overscroll-behavior:contain;border-right:0;border-top:1px solid var(--line);scrollbar-width:thin}
+.right{order:2;display:block;flex:0 0 auto;max-height:28dvh;padding:18px;overflow-y:auto;overscroll-behavior:contain}
+.right .sectionTitle{margin-bottom:10px}
+.metric{padding:10px 0}
+.viewLabel{left:14px;top:12px}
+.viewLabel h1{font-size:19px}
+.viewLabel p{font-size:10px}
+.viewTools{top:auto;right:10px;left:10px;bottom:58px;justify-content:center;gap:6px}
+.iconBtn{min-height:42px;padding:10px 9px;font-size:10px;touch-action:manipulation}
+.bottomBar{padding:10px 12px;min-height:48px;font-size:9px}
+.swatches{gap:10px}
+.swatch{width:28px;height:28px;flex:0 0 28px}
+.control{margin-bottom:26px}
+.controlHead{min-height:28px;margin-bottom:8px}
+.control label,.value{font-size:13px}
+input[type=range]{width:100%;height:34px;padding:0 2px;margin:0;touch-action:pan-y}
+.control select,select{min-height:46px;padding:12px!important;font-size:14px}
+.presets{gap:10px}
+.preset{min-height:48px;padding:12px 8px;font-size:12px;touch-action:manipulation}
+.sectionTitle{font-size:10px;margin-bottom:16px}
+.btn,button,select{-webkit-tap-highlight-color:transparent}
+}
+@media(max-width:380px){.brand small{max-width:120px;line-height:1.3}.headerRight .btn{padding:9px 8px;font-size:11px}.viewTools{gap:4px}.iconBtn{padding:9px 7px;font-size:9px}.bottomBar>div:first-child{max-width:65%}}
 </style>
 </head>
 <body>
