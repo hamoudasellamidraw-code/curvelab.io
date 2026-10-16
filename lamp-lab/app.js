@@ -33,9 +33,13 @@
     params.reliefScale = Number($('#reliefScale').value);
     params.reliefStrength = Number($('#reliefStrength').value);
     params.baseStyle = $('#baseStyle').value;
+    params.baseShape = $('#baseShape').value;
+    params.baseRelief = $('#baseRelief').value;
+    params.baseReliefDepth = Number($('#baseReliefDepth').value);
+    params.baseRibs = Number($('#baseRibs').value);
     params.baseHeight = Number($('#baseHeight').value);
     params.baseDiameter = Number($('#baseDiameter').value);
-    for (const [id, suffix] of [['reliefScale','×'],['reliefStrength',''],['baseHeight',' mm'],['baseDiameter',' mm']]) {
+    for (const [id, suffix] of [['reliefScale','×'],['reliefStrength',''],['baseHeight',' mm'],['baseDiameter',' mm'],['baseReliefDepth',' mm'],['baseRibs','']]) {
       $('#' + id + 'V').textContent = Number($('#' + id).value).toFixed(id === 'reliefScale' || id === 'reliefStrength' ? 1 : 0) + suffix;
     }
     geometryDirty = true;
@@ -70,8 +74,8 @@
   }
 
   Object.values(inputs).forEach(input => input.addEventListener('input', readControls));
-  ['shape','relief','reliefScale','reliefStrength','baseStyle','baseHeight','baseDiameter'].forEach(id => {
-    $('#' + id).addEventListener(id === 'shape' || id === 'relief' || id === 'baseStyle' ? 'change' : 'input', readControls);
+  ['shape','relief','reliefScale','reliefStrength','baseStyle','baseShape','baseRelief','baseReliefDepth','baseRibs','baseHeight','baseDiameter'].forEach(id => {
+    $('#' + id).addEventListener(['shape','relief','baseStyle','baseShape','baseRelief'].includes(id) ? 'change' : 'input', readControls);
   });
   function readSurface() {
     state.texture = $('#texture').value;
@@ -134,6 +138,8 @@
   }
   for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.addEventListener(type, endDrag);
   canvas.addEventListener('wheel', event => {
+    // Let normal page scrolling work over the preview. Zoom only on Ctrl+wheel.
+    if (!event.ctrlKey) return;
     event.preventDefault();
     const delta = event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? canvas.clientHeight : 1);
     state.zoom = Math.max(.55, Math.min(1.8, state.zoom * Math.exp(-delta * .001)));
