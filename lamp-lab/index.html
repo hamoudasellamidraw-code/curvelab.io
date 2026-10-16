@@ -12,7 +12,7 @@ button,input,select{font:inherit}button{cursor:pointer;border:0}.app{min-height:
 header{display:flex;align-items:center;justify-content:space-between;padding:0 26px;border-bottom:1px solid var(--line);gap:18px}
 .brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:.12em;font-size:13px}.mark{width:28px;height:28px;border:1px solid var(--accent);border-radius:50%;display:grid;place-items:center;color:var(--accent);font-size:17px}
 .brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.2em;font-weight:600;margin-top:2px}
-.headerRight{display:flex;align-items:center;gap:12px}.status{color:var(--muted);font-size:11px;letter-spacing:.08em}.btn{border-radius:6px;padding:11px 15px;font-weight:750;font-size:12px}.btn.primary{background:var(--accent);color:var(--accentInk)}.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.headerRight{display:flex;align-items:center;gap:12px}.btn{border-radius:6px;padding:11px 15px;font-weight:750;font-size:12px}.btn.primary{background:var(--accent);color:var(--accentInk)}.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
 main{display:grid;grid-template-columns:310px minmax(0,1fr) 245px;min-height:calc(100vh - 70px)}
 aside{background:var(--panel);padding:22px 20px;border-right:1px solid var(--line);overflow:auto}.right{border-right:0;border-left:1px solid var(--line);background:#151714}
 .sectionTitle{font-size:10px;letter-spacing:.16em;color:var(--muted);font-weight:800;text-transform:uppercase;margin:2px 0 18px;display:flex;justify-content:space-between}
@@ -20,7 +20,8 @@ aside{background:var(--panel);padding:22px 20px;border-right:1px solid var(--lin
 input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointer}
 .hint{color:var(--muted);font-size:10px;margin-top:7px}.presets{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:26px}.preset{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 7px;border-radius:6px;font-size:11px}.preset:hover,.preset.active{border-color:var(--accent);color:var(--accent)}
 .viewer{position:relative;min-height:650px;overflow:hidden;background:radial-gradient(ellipse at 50% 43%,#30332a 0,#1b1d19 36%,#11120f 76%)}
-#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#scene.dragging{cursor:grabbing}#scene:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
 .viewLabel{position:absolute;left:24px;top:22px;pointer-events:none}.eyebrow{color:var(--accent);font-size:9px;letter-spacing:.2em;font-weight:800}.viewLabel h1{font-size:24px;letter-spacing:-.04em;margin:6px 0;font-weight:600}.viewLabel p{margin:0;color:var(--muted);font-size:11px}
 .viewTools{position:absolute;right:18px;top:18px;display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.iconBtn.active{border-color:var(--accent);color:var(--accent)}.viewer.renderMode{background:radial-gradient(ellipse at 50% 42%,#45483d 0,#252820 38%,#11120f 78%)}.viewer.renderMode:after{content:"STUDIO RENDER";position:absolute;right:18px;bottom:62px;color:#d5f078;font-size:9px;letter-spacing:.18em;pointer-events:none;opacity:.8}.iconBtn{background:#20231fdc;color:var(--text);border:1px solid #454a40;border-radius:5px;padding:9px 11px;font-size:11px}
 .bottomBar{position:absolute;bottom:0;left:0;right:0;padding:14px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #35382e;background:#141611d9;color:var(--muted);font-size:10px}
@@ -28,15 +29,16 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
 .metric{padding:14px 0;border-bottom:1px solid var(--line)}.metric span{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}.metric strong{font-size:22px;letter-spacing:-.04em;font-weight:600;display:block;margin-top:3px}.metric small{font-size:10px;color:var(--muted)}
 .infoCard{margin-top:22px;padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:7px}.infoCard h3{font-size:11px;margin:0 0 8px}.infoCard p{font-size:10px;color:var(--muted);margin:0;line-height:1.6}
 .printBtn{width:100%;margin-top:22px}.footerNote{font-size:10px;color:var(--muted);line-height:1.6;margin-top:14px}
+@media(max-width:1180px){.viewTools{top:100px}}
 @media(max-width:1050px){main{grid-template-columns:270px minmax(0,1fr)}.right{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:18px 22px}.right .sectionTitle{grid-column:1/-1;margin-bottom:0}.metric{border-bottom:0}.infoCard{margin-top:0}.printBtn{margin-top:0}}
-@media(max-width:700px){.app{grid-template-rows:60px 1fr}header{padding:0 14px}.status{display:none}main{display:flex;flex-direction:column}.viewer{order:0;min-height:54vh}.left{order:1;border-right:0;border-top:1px solid var(--line)}.right{order:2;display:block}.right .sectionTitle{margin-bottom:10px}.metric{padding:10px 0}.viewLabel{left:15px;top:15px}.viewLabel h1{font-size:20px}.headerRight .btn{padding:9px 10px}.brand{font-size:11px}}
+@media(max-width:700px){.app{grid-template-rows:60px 1fr}header{padding:0 14px}main{display:flex;flex-direction:column}.viewer{order:0;min-height:max(54vh,440px)}.left{order:1;border-right:0;border-top:1px solid var(--line)}.right{order:2;display:block}.right .sectionTitle{margin-bottom:10px}.metric{padding:10px 0}.viewLabel{left:15px;top:15px}.viewLabel h1{font-size:20px}.headerRight .btn{padding:9px 10px}.brand{font-size:11px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
   <div class="brand"><div class="mark">∿</div><div>CURVE LAB<small>OBJECTS / PARAMETRIC STUDIO</small></div></div>
-  <div class="headerRight"><span class="status">● LIVE GEOMETRY</span><button class="btn ghost" id="resetBtn">Reset</button><button class="btn primary" id="exportTop">Export STL ↗</button></div>
+  <div class="headerRight"><button class="btn ghost" id="resetBtn">Reset</button><button class="btn primary" id="exportTop">Export STL ↗</button></div>
 </header>
 <main>
 <aside class="left">
@@ -63,10 +65,11 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
   <p class="hint">Surface texture is for visual preview; it does not add physical micro-detail to the exported STL.</p>
   <p class="hint">All dimensions are in millimeters. Changes update the live preview.</p>
 </aside>
-<section class="viewer">
-  <canvas id="scene"></canvas>
+<section class="viewer renderMode">
+  <canvas id="scene" tabindex="0" role="img" aria-label="3D lampshade preview. Drag or use arrow keys to orbit; scroll or use plus and minus to zoom."></canvas>
   <div class="viewLabel"><div class="eyebrow">FORM STUDY / 001</div><h1>Ripple No. 01</h1><p>Parametric shade · Made to be printed</p></div>
-  <div class="viewTools"><button class="iconBtn" id="homeView">⌂ &nbsp; Home view</button><button class="iconBtn" id="wireBtn">◇ &nbsp; Wireframe</button><button class="iconBtn active" id="renderBtn">✦ &nbsp; Render preview</button></div>
+  <p id="renderNotice" class="hint" hidden style="position:absolute;bottom:62px;left:20px;right:20px">Surface textures and shadows are unavailable in this simplified preview.</p>
+  <div class="viewTools"><button class="iconBtn" id="homeView">⌂ &nbsp; Home view</button><button class="iconBtn" id="wireBtn" aria-pressed="false">◇ &nbsp; Wireframe</button><button class="iconBtn active" id="renderBtn" aria-pressed="true">✦ &nbsp; Render preview</button></div>
   <div class="bottomBar"><div><strong>DRAG</strong> to orbit &nbsp; / &nbsp; <strong>SCROLL</strong> to zoom</div><div class="swatches"><button class="swatch active" data-color="#e9e3d5" style="background:#e9e3d5" aria-label="Warm white"></button><button class="swatch" data-color="#c7d3b7" style="background:#c7d3b7" aria-label="Sage"></button><button class="swatch" data-color="#d1a16c" style="background:#d1a16c" aria-label="Sand"></button><button class="swatch" data-color="#8d999f" style="background:#8d999f" aria-label="Slate"></button></div></div>
 </section>
 <aside class="right">
@@ -74,93 +77,16 @@ input[type=range]{width:100%;accent-color:var(--accent);height:4px;cursor:pointe
   <div class="metric"><span>Height</span><strong id="sumHeight">220 <small>mm</small></strong></div>
   <div class="metric"><span>Max diameter</span><strong id="sumDiameter">160 <small>mm</small></strong></div>
   <div class="metric"><span>Wall thickness</span><strong id="sumWall">1.6 <small>mm</small></strong></div>
-  <div class="metric"><span>Mesh resolution</span><strong id="sumFaces">—</strong><small>Triangles, approximate</small></div>
+  <div class="metric"><span>Mesh resolution</span><strong id="sumFaces">—</strong><small>Export triangles</small></div>
   <div class="infoCard"><h3>Print notes</h3><p>Use a translucent or natural filament for a diffused glow. Validate minimum wall thickness and fit with your slicer before printing. Use an LED light source only.</p></div>
   <button class="btn primary printBtn" id="exportBottom">Download STL file ↓</button>
   <div class="footerNote">STL exports the shade mesh in millimeter-scale coordinates. Electrical components and lamp base are not included.</div>
 </aside>
 </main>
 </div>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-
-const canvas=document.querySelector('#scene');
-const viewer=document.querySelector('.viewer');
-const ids=['height','diameter','ribs','depth','twist','taper','wall','base'];
-const $=s=>document.querySelector(s), v=id=>Number($('#'+id).value);
-const defaults={height:220,diameter:160,ribs:24,depth:5,twist:18,taper:18,wall:1.6,base:42};
-let preset='ripple',wire=false,renderMode=true,color='#e9e3d5',yaw=.55,pitch=.12,zoom=1,drag=false,lastX=0,lastY=0;
-const scene=new THREE.Scene(); scene.background=new THREE.Color('#eeeae1');
-scene.fog=new THREE.Fog('#eeeae1',650,1400);
-const camera=new THREE.PerspectiveCamera(34,1,0.1,2000); camera.position.set(270,100,370);
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
-renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.7));
-renderer.outputColorSpace=THREE.SRGBColorSpace;
-renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.15;
-renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-scene.add(new THREE.HemisphereLight(0xffffff,0x9c9588,2.1));
-const key=new THREE.DirectionalLight(0xfff3df,3.3);key.position.set(-220,300,250);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.camera.left=-260;key.shadow.camera.right=260;key.shadow.camera.top=300;key.shadow.camera.bottom=-300;key.shadow.bias=-0.0003;scene.add(key);
-const fill=new THREE.DirectionalLight(0xd6e4ff,1.7);fill.position.set(250,100,80);scene.add(fill);
-const rim=new THREE.DirectionalLight(0xffffff,2.4);rim.position.set(0,180,-260);scene.add(rim);
-const floorMat=new THREE.MeshStandardMaterial({color:'#eeeae1',roughness:.82});
-const floor=new THREE.Mesh(new THREE.PlaneGeometry(2000,2000),floorMat);floor.rotation.x=-Math.PI/2;floor.position.y=-165;floor.receiveShadow=true;scene.add(floor);
-const studio=new THREE.Group();scene.add(studio);
-let lamp=null, groundShadow=null, geometry=null, bumpTexture=null;
-function makeBumpTexture(){
- const type=$('#texture').value, scale=Number($('#textureScale').value), size=256;
- const c=document.createElement('canvas');c.width=size;c.height=size;const x=c.getContext('2d');
- const img=x.createImageData(size,size);
- for(let y=0;y<size;y++)for(let xx=0;xx<size;xx++){
-  const u=xx/size,vv=y/size;let n=128;
-  if(type==='micrograin'){n+=Math.sin(xx*1.7+Math.sin(y*.19)*2)*8+Math.sin(y*2.1+xx*.37)*5+(Math.random()-.5)*24}
-  else if(type==='striated'){n+=Math.sin(xx/size*Math.PI*2*36*scale + Math.sin(vv*18)*.7)*32+(Math.random()-.5)*5}
-  else if(type==='linen'){n+=Math.sin(xx/size*Math.PI*2*26*scale)*18+Math.sin(y/size*Math.PI*2*26*scale)*18}
-  else if(type==='stippling'){n+=(Math.random()-.5)*95+Math.sin(xx*.16)*4}
-  else if(type==='ripple'){n+=Math.sin(Math.hypot(xx-size*.5,y-size*.5)*.55*scale+Math.sin(xx*.04)*2)*25}
-  img.data[(y*size+xx)*4]=img.data[(y*size+xx)*4+1]=img.data[(y*size+xx)*4+2]=Math.max(0,Math.min(255,n));
-  img.data[(y*size+xx)*4+3]=255;
- }
- x.putImageData(img,0,0);const tex=new THREE.CanvasTexture(c);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(3*scale,3*scale);tex.colorSpace=THREE.NoColorSpace;tex.needsUpdate=true;return tex;
-}
-function updateTexture(){
- if(bumpTexture)bumpTexture.dispose();
- bumpTexture=makeBumpTexture();
- if(lamp){lamp.material.bumpMap=$('#texture').value==='smooth'?null:bumpTexture;lamp.material.bumpScale=Number($('#textureStrength').value)*1.4;lamp.material.roughness=$('#texture').value==='smooth'?.2:($('#texture').value==='stippling'?.78:renderMode?.32:.52);lamp.material.needsUpdate=true}
- $('#textureScaleV').textContent=Number($('#textureScale').value).toFixed(1)+'×';
- $('#textureStrengthV').textContent=Number($('#textureStrength').value).toFixed(2);
- render();
-}
-function labels(){ids.forEach(id=>{const suf={height:' mm',diameter:' mm',ribs:'',depth:' mm',twist:'°',taper:'%',wall:' mm',base:' mm'}[id];$('#'+id+'V').textContent=$('#'+id).value+suf});$('#sumHeight').innerHTML=v('height')+' <small>mm</small>';$('#sumDiameter').innerHTML=v('diameter')+' <small>mm</small>';$('#sumWall').innerHTML=v('wall')+' <small>mm</small>'}
-function radius(t,a,inner=false){const d=v('diameter'),taper=v('taper')/100,depth=v('depth'),ribs=v('ribs');let r=d*.5*(1-taper*.45+(taper*.9)*t);r*=.91+.09*Math.sin(Math.PI*t);r+=depth*.5*Math.cos(a*ribs+v('twist')*Math.PI/180*t*1.6);if(inner)r-=v('wall');return Math.max(inner?v('base')*.5:v('base')*.5+v('wall')+1,r)}
-function makeGeometry(){const N=128,M=96,h=v('height'),positions=[],indices=[];
- for(let layer=0;layer<2;layer++){for(let j=0;j<=M;j++){const t=j/M;for(let i=0;i<=N;i++){const a=i/N*Math.PI*2,tw=v('twist')*Math.PI/180*t,r=radius(t,a,layer===1);positions.push(Math.cos(a+tw)*r,(t-.5)*h,Math.sin(a+tw)*r)}}}
- const stride=(N+1)*(M+1);
- for(let layer=0;layer<2;layer++){const off=layer*stride;for(let j=0;j<M;j++)for(let i=0;i<N;i++){const a=off+j*(N+1)+i,b=a+N+1;if(layer===0)indices.push(a,b,a+1,b,b+1,a+1);else indices.push(a,a+1,b,b,a+1,b+1)}}
- for(const j of [0,M]){for(let i=0;i<N;i++){const a=j*(N+1)+i,b=a+1,c=stride+a,d=stride+b;if(j===0)indices.push(a,c,b,b,c,d);else indices.push(a,b,c,b,d,c)}}
- const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setIndex(indices);g.computeVertexNormals();return g}
-function rebuild(){if(lamp){studio.remove(lamp);lamp.geometry.dispose();lamp.material.dispose()}geometry=makeGeometry();const mat=new THREE.MeshPhysicalMaterial({color,roughness:renderMode?.32:.52,metalness:.02,clearcoat:renderMode?.34:.05,clearcoatRoughness:.24,side:THREE.DoubleSide});lamp=new THREE.Mesh(geometry,mat);lamp.castShadow=true;lamp.receiveShadow=true;lamp.rotation.y=yaw;lamp.rotation.x=pitch;lamp.position.y=0;lamp.material.wireframe=wire;studio.add(lamp);updateTexture();const tri=geometry.index.count/3;$('#sumFaces').textContent=Math.round(tri).toLocaleString();$('.viewLabel h1').textContent=({ripple:'Ripple No. 01',twist:'Helix No. 02',taper:'Taper No. 03',orb:'Orb No. 04'})[preset];fitCamera();render()}
-function fitCamera(){const h=v('height'),d=v('diameter');camera.position.set(1.55*d, h*.38+40, 2.35*d+80);camera.lookAt(0,0,0);camera.zoom=zoom;camera.updateProjectionMatrix()}
-function render(){const w=Math.max(1,viewer.clientWidth),h=Math.max(1,viewer.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();renderer.render(scene,camera)}
-function refresh(){labels();rebuild()}
-function setPreset(p){preset=p;const values={ripple:{height:220,diameter:160,ribs:24,depth:5,twist:18,taper:18,wall:1.6,base:42},twist:{height:250,diameter:150,ribs:18,depth:7,twist:76,taper:8,wall:1.8,base:40},taper:{height:210,diameter:175,ribs:32,depth:3.5,twist:0,taper:38,wall:1.6,base:45},orb:{height:175,diameter:180,ribs:40,depth:4,twist:32,taper:-12,wall:1.4,base:38}}[p];Object.entries(values).forEach(([k,x])=>$('#'+k).value=x);document.querySelectorAll('.preset').forEach(b=>b.classList.toggle('active',b.dataset.preset===p));refresh()}
-ids.forEach(id=>$('#'+id).addEventListener('input',refresh));
-$('#texture').addEventListener('change',updateTexture);
-$('#textureScale').addEventListener('input',updateTexture);
-$('#textureStrength').addEventListener('input',updateTexture);
-document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>setPreset(b.dataset.preset)));
-document.querySelectorAll('.swatch').forEach(b=>b.addEventListener('click',()=>{color=b.dataset.color;document.querySelectorAll('.swatch').forEach(s=>s.classList.toggle('active',s===b));if(lamp)lamp.material.color.set(color);render()}));
-$('#wireBtn').addEventListener('click',()=>{wire=!wire;$('#wireBtn').textContent=wire?'▧  Solid view':'◇  Wireframe';$('#wireBtn').classList.toggle('active',wire);if(lamp)lamp.material.wireframe=wire;render()});
-$('#renderBtn').addEventListener('click',()=>{renderMode=!renderMode;viewer.classList.toggle('renderMode',renderMode);$('#renderBtn').classList.toggle('active',renderMode);$('#renderBtn').textContent=renderMode?'✦  Render preview':'◌  Draft preview';if(lamp){lamp.material.roughness=renderMode?.27:.48;lamp.material.clearcoat=renderMode?.34:.05;lamp.material.needsUpdate=true}render()});
-viewer.classList.add('renderMode');
-$('#homeView').addEventListener('click',()=>{yaw=.55;pitch=.12;zoom=1;if(lamp){lamp.rotation.y=yaw;lamp.rotation.x=pitch}fitCamera();render()});
-$('#resetBtn').addEventListener('click',()=>setPreset('ripple'));
-canvas.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId)});
-canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-lastX)*.008;pitch=Math.max(-.45,Math.min(.65,pitch+(e.clientY-lastY)*.006));lastX=e.clientX;lastY=e.clientY;if(lamp){lamp.rotation.y=yaw;lamp.rotation.x=pitch}render()});
-canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
-canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.65,Math.min(1.8,zoom-e.deltaY*.001));camera.zoom=zoom;camera.updateProjectionMatrix();render()},{passive:false});
-function exportSTL(){if(!geometry)return;const g=geometry.clone();g.applyMatrix4(lamp.matrixWorld);const pos=g.getAttribute('position'),idx=g.index,triCount=idx?idx.count/3:pos.count/3,buf=new ArrayBuffer(84+triCount*50),dv=new DataView(buf);const title='Curve Lab parametric lamp shade';for(let i=0;i<title.length;i++)dv.setUint8(i,title.charCodeAt(i));dv.setUint32(80,triCount,true);let o=84;for(let t=0;t<triCount;t++){const ids3=idx?[idx.getX(t*3),idx.getX(t*3+1),idx.getX(t*3+2)]:[t*3,t*3+1,t*3+2];const a=new THREE.Vector3().fromBufferAttribute(pos,ids3[0]),b=new THREE.Vector3().fromBufferAttribute(pos,ids3[1]),c=new THREE.Vector3().fromBufferAttribute(pos,ids3[2]);const n=new THREE.Vector3().subVectors(b,a).cross(new THREE.Vector3().subVectors(c,a)).normalize();[n.x,n.y,n.z,a.x,a.y,a.z,b.x,b.y,b.z,c.x,c.y,c.z].forEach(x=>{dv.setFloat32(o,x,true);o+=4});dv.setUint16(o,0,true);o+=2}const blob=new Blob([buf],{type:'model/stl'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='curve-lab-'+preset+'-lamp.stl';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);g.dispose()}
-$('#exportTop').addEventListener('click',exportSTL);$('#exportBottom').addEventListener('click',exportSTL);
-window.addEventListener('resize',render);refresh();render();
-</script>
+<script src="geometry.js" defer></script>
+<script src="surface.js" defer></script>
+<script src="renderer.js" defer></script>
+<script src="app.js" defer></script>
 </body>
 </html>
