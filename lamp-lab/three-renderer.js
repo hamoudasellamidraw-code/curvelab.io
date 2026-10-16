@@ -45,9 +45,10 @@ class ThreeRenderer {
     this.floor.rotation.x = -Math.PI / 2;
     this.floor.receiveShadow = true;
     this.scene.add(this.floor);
-    this.material = new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true,
-      metalness: 0, roughness: .78, side: THREE.DoubleSide, envMapIntensity: 0.8 });
-    this.lamp = new THREE.Mesh(new THREE.BufferGeometry(), this.material);
+    const materialOptions = { color: '#ffffff', metalness: 0, roughness: .78, side: THREE.DoubleSide, envMapIntensity: 0.8 };
+    this.material = new THREE.MeshStandardMaterial(materialOptions);
+    this.baseMaterial = new THREE.MeshStandardMaterial(materialOptions);
+    this.lamp = new THREE.Mesh(new THREE.BufferGeometry(), [this.material, this.baseMaterial]);
     this.lamp.castShadow = true;
     this.lamp.receiveShadow = true;
     this.scene.add(this.lamp);
@@ -94,6 +95,10 @@ class ThreeRenderer {
       }
       // Same rib sampling/row count means identical indices, including wireframe.
     }
+    geometry.clearGroups();
+    const baseStart = Number.isInteger(mesh.baseIndexStart) ? mesh.baseIndexStart : Math.floor(mesh.indices.length * .8);
+    geometry.addGroup(0, baseStart, 0);
+    geometry.addGroup(baseStart, mesh.indices.length - baseStart, 1);
     geometry.computeBoundingSphere();
     geometry.computeBoundingBox();
     this.geometryDirty = true;
@@ -103,19 +108,13 @@ class ThreeRenderer {
     const signature = [state.color, state.baseColor, state.studio, state.wire, state.texture,
       state.textureScale, state.textureStrength, state.finish].join('|');
     if (signature === this.lastMaterial) return;
-    const material = this.material;
-    material.color.setRGB(1, 1, 1);
-    material.wireframe = state.wire;
     const finishes = {
       matte: { roughness: .9, metalness: 0, bump: .42, env: .45 },
       satin: { roughness: .62, metalness: 0, bump: .3, env: .75 },
       ceramic: { roughness: .28, metalness: 0, bump: .12, env: 1.15 },
       stone: { roughness: .96, metalness: 0, bump: .72, env: .35 }
     };
-    const finish = finishes[state.finish || 'matte'];
-    material.roughness = state.studio ? finish.roughness : .92;
-    material.metalness = finish.metalness;
-    material.envMapIntensity = state.studio ? finish.env : .3;
+    const finish = finishes[state.finish] || finishes.matte;
     let texture = null;
     if (state.texture !== 'smooth') {
       if (!this.textures.has(state.texture)) {
@@ -131,12 +130,18 @@ class ThreeRenderer {
       }
       texture = this.textures.get(state.texture);
       texture.repeat.set(state.textureScale * 3, state.textureScale * 3);
+      texture.needsUpdate = true;
     }
-    // Intensity/repeat changes only update uniforms; compile only when the map
-    // is enabled/disabled. Cached textures survive geometry and preset changes.
-    if (Boolean(material.bumpMap) !== Boolean(texture)) material.needsUpdate = true;
-    material.bumpMap = texture;
-    material.bumpScale = state.textureStrength * finish.bump;
+    for (const [material, color] of [[this.material, state.color], [this.baseMaterial, state.baseColor || state.color]]) {
+      material.color.setRGB(color[0], color[1], color[2]);
+      material.wireframe = state.wire;
+      material.roughness = state.studio ? finish.roughness : .92;
+      material.metalness = finish.metalness;
+      material.envMapIntensity = state.studio ? finish.env : .3;
+      if (Boolean(material.bumpMap) !== Boolean(texture)) material.needsUpdate = true;
+      material.bumpMap = texture;
+      material.bumpScale = state.textureStrength * finish.bump;
+    }
     this.lastMaterial = signature;
   }
 
