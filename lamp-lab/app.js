@@ -28,6 +28,16 @@
     for (const id of ['height', 'diameter', 'wall']) {
       $('#sum' + id[0].toUpperCase() + id.slice(1)).innerHTML = params[id] + ' <small>mm</small>';
     }
+    params.shape = $('#shape').value;
+    params.relief = $('#relief').value;
+    params.reliefScale = Number($('#reliefScale').value);
+    params.reliefStrength = Number($('#reliefStrength').value);
+    params.baseStyle = $('#baseStyle').value;
+    params.baseHeight = Number($('#baseHeight').value);
+    params.baseDiameter = Number($('#baseDiameter').value);
+    for (const [id, suffix] of [['reliefScale','×'],['reliefStrength',''],['baseHeight',' mm'],['baseDiameter',' mm']]) {
+      $('#' + id + 'V').textContent = Number($('#' + id).value).toFixed(id === 'reliefScale' || id === 'reliefStrength' ? 1 : 0) + suffix;
+    }
     geometryDirty = true;
     requestDraw();
   }
@@ -60,6 +70,9 @@
   }
 
   Object.values(inputs).forEach(input => input.addEventListener('input', readControls));
+  ['shape','relief','reliefScale','reliefStrength','baseStyle','baseHeight','baseDiameter'].forEach(id => {
+    $('#' + id).addEventListener(id === 'shape' || id === 'relief' || id === 'baseStyle' ? 'change' : 'input', readControls);
+  });
   function readSurface() {
     state.texture = $('#texture').value;
     state.textureScale = Number($('#textureScale').value);
