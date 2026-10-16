@@ -11,7 +11,7 @@
   const units = { height: ' mm', diameter: ' mm', ribs: '', depth: ' mm', twist: '°', taper: '%', wall: ' mm', base: ' mm' };
   const inputs = Object.fromEntries(Object.keys(presets.ripple).map(id => [id, $('#' + id)]));
   const values = Object.fromEntries(Object.keys(inputs).map(id => [id, $('#' + id + 'V')]));
-  const state = { yaw: .55, pitch: .12, zoom: 1, wire: false, studio: true, color: [233 / 255, 227 / 255, 213 / 255],
+  const state = { yaw: .55, pitch: .12, zoom: 1, wire: false, studio: true, color: [233 / 255, 227 / 255, 213 / 255], baseColor: [52 / 255, 56 / 255, 50 / 255],
     texture: 'micrograin', textureScale: 1, textureStrength: .35 };
   let preset = 'ripple', params, mesh, geometryDirty = true, frame = null;
   let pointer = null, lastX = 0, lastY = 0;
@@ -90,8 +90,10 @@
   $('#textureStrength').addEventListener('input', readSurface);
   document.querySelectorAll('.preset').forEach(button => button.addEventListener('click', () => setPreset(button.dataset.preset)));
   document.querySelectorAll('.swatch').forEach(button => button.addEventListener('click', () => {
-    state.color = [1, 3, 5].map(i => parseInt(button.dataset.color.slice(i, i + 2), 16) / 255);
-    document.querySelectorAll('.swatch').forEach(swatch => swatch.classList.toggle('active', swatch === button));
+    const color = [1, 3, 5].map(i => parseInt(button.dataset.color.slice(i, i + 2), 16) / 255);
+    const part = button.dataset.part || 'shade';
+    if (part === 'base') state.baseColor = color; else state.color = color;
+    document.querySelectorAll('.swatch[data-part="' + part + '"]').forEach(swatch => swatch.classList.toggle('active', swatch === button));
     requestDraw();
   }));
   $('#wireBtn').addEventListener('click', () => {
