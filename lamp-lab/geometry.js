@@ -1,148 +1,56 @@
-/* Shared by the browser preview, STL export and dependency-free Node tests. */
-(function (root) {
-  'use strict';
-
-  function buildGeometry(params, quality = 'full') {
-    const { height, diameter, ribs, depth, twist, taper, wall, base } = params;
-    // Eight samples per rib prevent the old 64-segment mesh from aliasing at
-    // high rib counts. Even the largest mesh fits WebGL 1's 16-bit indices.
-    const radial = Math.max(quality === 'fallback' ? 64 : 128,
-      Math.ceil(ribs * (quality === 'fallback' ? 4 : 8) / 16) * 16);
-    const rows = quality === 'fallback' ? 24 : 56;
-    const stride = radial + 1;
-    const layerSize = stride * (rows + 1);
-    const positions = new Float32Array((2 * layerSize + 4 * stride) * 3);
-    const normals = new Float32Array(positions.length);
-    const uvs = new Float32Array(positions.length / 3 * 2);
-    const indices = new Uint16Array(4 * radial * (rows + 1) * 3);
-    const twistRadians = twist * Math.PI / 180;
-    let cursor = 0;
-
-    // Read controls once in app.js, never from inside the vertex loops.
-    for (let layer = 0; layer < 2; layer++) {
-      for (let j = 0; j <= rows; j++) {
-        const t = j / rows;
-        const profile = diameter * .5 * (1 - taper * .0045 + taper * .009 * t)
-          * (.91 + .09 * Math.sin(Math.PI * t));
-        const floor = base * .5 + (layer ? 0 : wall + 1);
-        for (let i = 0; i <= radial; i++) {
-          const angle = (i % radial) / radial * Math.PI * 2;
-          const radius = Math.max(floor, profile
-            + depth * .5 * Math.cos(angle * ribs + twistRadians * t * 1.6)
-            - (layer ? wall : 0));
-          const vertex = layer * layerSize + j * stride + i;
-          const offset = vertex * 3;
-          positions[offset] = Math.cos(angle + twistRadians * t) * radius;
-          positions[offset + 1] = (t - .5) * height;
-          positions[offset + 2] = Math.sin(angle + twistRadians * t) * radius;
-          uvs[vertex * 2] = i / radial;
-          uvs[vertex * 2 + 1] = t;
-        }
-      }
-    }
-
-    function triangle(a, b, c) {
-      indices[cursor++] = a;
-      indices[cursor++] = b;
-      indices[cursor++] = c;
-      const A = a * 3, B = b * 3, C = c * 3;
-      const ux = positions[B] - positions[A];
-      const uy = positions[B + 1] - positions[A + 1];
-      const uz = positions[B + 2] - positions[A + 2];
-      const vx = positions[C] - positions[A];
-      const vy = positions[C + 1] - positions[A + 1];
-      const vz = positions[C + 2] - positions[A + 2];
-      const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
-      for (const offset of [A, B, C]) {
-        normals[offset] += nx;
-        normals[offset + 1] += ny;
-        normals[offset + 2] += nz;
-      }
-    }
-
-    for (let layer = 0; layer < 2; layer++) {
-      for (let j = 0; j < rows; j++) {
-        for (let i = 0; i < radial; i++) {
-          const a = layer * layerSize + j * stride + i;
-          const b = a + 1;
-          if (layer) {
-            triangle(a, b, a + stride);
-            triangle(a + stride, b, b + stride);
-          } else {
-            triangle(a, a + stride, b);
-            triangle(a + stride, b + stride, b);
-          }
-        }
-      }
-    }
-
-    // Duplicate the rim vertices for crisp rim normals, but copy coordinates
-    // exactly so the STL remains watertight after welding coincident vertices.
-    for (let end = 0; end < 2; end++) {
-      const cap = 2 * layerSize + end * 2 * stride;
-      const ring = end * rows * stride;
-      for (let layer = 0; layer < 2; layer++) {
-        const source = (layer * layerSize + ring) * 3;
-        positions.set(positions.subarray(source, source + stride * 3), (cap + layer * stride) * 3);
-        for (let i = 0; i <= radial; i++) {
-          const vertex = cap + layer * stride + i;
-          uvs[vertex * 2] = .5 + positions[vertex * 3] / (diameter * 2);
-          uvs[vertex * 2 + 1] = .5 + positions[vertex * 3 + 2] / (diameter * 2);
-        }
-      }
-      for (let i = 0; i < radial; i++) {
-        const a = cap + i, b = a + 1;
-        const c = a + stride, d = b + stride;
-        if (end) {
-          triangle(a, c, b);
-          triangle(b, c, d);
-        } else {
-          triangle(a, b, c);
-          triangle(b, d, c);
-        }
-      }
-    }
-    // Separate UV endpoints avoid stretching across the wrap; share their
-    // normals so smooth shading has no visible seam.
-    for (let layer = 0; layer < 2; layer++) for (let row = 0; row <= rows; row++) {
-      const a = (layer * layerSize + row * stride) * 3, b = a + radial * 3;
-      for (let axis = 0; axis < 3; axis++) normals[a + axis] = normals[b + axis] = normals[a + axis] + normals[b + axis];
-    }
-    for (let i = 0; i < normals.length; i += 3) {
-      const length = Math.hypot(normals[i], normals[i + 1], normals[i + 2]) || 1;
-      normals[i] /= length;
-      normals[i + 1] /= length;
-      normals[i + 2] /= length;
-    }
-    return { positions, normals, uvs, indices, radial, rows, stride };
-  }
-
-  function encodeSTL({ positions, indices }) {
-    const count = indices.length / 3;
-    const buffer = new ArrayBuffer(84 + count * 50);
-    const view = new DataView(buffer);
-    const header = 'Curve Lab parametric shade - millimeters';
-    for (let i = 0; i < header.length; i++) view.setUint8(i, header.charCodeAt(i));
-    view.setUint32(80, count, true);
-    let offset = 84;
-    const write = n => { view.setFloat32(offset, n, true); offset += 4; };
-    for (let i = 0; i < indices.length; i += 3) {
-      const a = indices[i] * 3, b = indices[i + 1] * 3, c = indices[i + 2] * 3;
-      const ux = positions[b] - positions[a], uy = positions[b + 1] - positions[a + 1], uz = positions[b + 2] - positions[a + 2];
-      const vx = positions[c] - positions[a], vy = positions[c + 1] - positions[a + 1], vz = positions[c + 2] - positions[a + 2];
-      const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
-      const length = Math.hypot(nx, ny, nz) || 1;
-      write(nx / length); write(ny / length); write(nz / length);
-      for (const vertex of [a, b, c]) {
-        write(positions[vertex]); write(positions[vertex + 1]); write(positions[vertex + 2]);
-      }
-      view.setUint16(offset, 0, true);
-      offset += 2;
-    }
-    return buffer;
-  }
-
-  const api = { buildGeometry, encodeSTL };
-  if (typeof module !== 'undefined' && module.exports) module.exports = api;
-  else root.LampGeometry = api;
-})(typeof window !== 'undefined' ? window : this);
+/* Parametric lampshade plus modeled pedestal, all dimensions in millimeters. */
+(function(root){'use strict';
+function buildGeometry(p,quality='full'){
+ const N=quality==='fallback'?80:128,M=quality==='fallback'?40:72;
+ const pos=[],uv=[],idx=[],h=p.height,d=p.diameter,tw=p.twist*Math.PI/180;
+ const shape=p.shape||'rounded',relief=p.relief||'flutes',freq=Number(p.reliefScale||1),strength=Number(p.reliefStrength??.5);
+ function profile(t){const taper=1-p.taper*.0045+p.taper*.009*t;
+  if(shape==='mushroom')return taper*(.58+.42*Math.min(1,t*2.4))*(t>.58?1+.23*Math.sin(Math.PI*(t-.58)/.42):1);
+  if(shape==='square')return taper*(.94+.06*Math.sin(Math.PI*t));
+  if(shape==='cone')return taper*(.52+.48*t);
+  if(shape==='cylinder')return taper;
+  return taper*(.70+.30*Math.sin(Math.PI*t));
+ }
+ function displacement(a,t){if(relief==='smooth')return 0;const s=strength*freq;
+  if(relief==='flutes')return Math.cos(a*p.ribs+tw*t*1.6)*p.depth*.5;
+  if(relief==='spiral')return Math.cos(a*7*freq-t*16*freq+tw*t)*p.depth*.8*s;
+  if(relief==='diamond')return Math.cos(a*11*freq)*Math.cos(t*h*.10*freq)*p.depth*.8*s;
+  if(relief==='scales')return Math.cos(a*15*freq+Math.sin(t*h*.07*freq)*1.5)*Math.cos(t*h*.09*freq)*p.depth*.7*s;
+  if(relief==='waves')return Math.sin(a*5*freq+Math.sin(t*11*freq)*2.2)*p.depth*.8*s;
+  if(relief==='organic')return (Math.sin(a*8*freq+Math.sin(t*17*freq)*1.5)+.5*Math.sin(a*13*freq-t*23*freq))*p.depth*.48*s;
+  if(relief==='knurl')return Math.sin(a*18*freq)*Math.sin(t*h*.14*freq)*p.depth*.75*s;
+  return 0;
+ }
+ function addRingSurface(rings,segments,cap=true){const start=pos.length/3,stride=segments+1;
+  rings.forEach((ring,j)=>{for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2;pos.push(Math.cos(a)*ring.r,ring.y,Math.sin(a)*ring.r);uv.push(i/segments,j/Math.max(1,rings.length-1));}});
+  for(let j=0;j<rings.length-1;j++)for(let i=0;i<segments;i++){const a=start+j*stride+i,b=a+stride;idx.push(a,b,a+1,b,b+1,a+1);}
+  if(cap){const bottom=pos.length/3;pos.push(0,rings[0].y,0);uv.push(.5,0);const top=pos.length/3;pos.push(0,rings[rings.length-1].y,0);uv.push(.5,1);
+   for(let i=0;i<segments;i++){idx.push(bottom,start+i,start+i+1);const a=start+(rings.length-1)*stride+i;idx.push(top,a+1,a);}}
+ }
+ const start=0,stride=N+1,layerSize=stride*(M+1);
+ for(let layer=0;layer<2;layer++)for(let j=0;j<=M;j++){const t=j/M,baseR=d*.5*profile(t);for(let i=0;i<=N;i++){
+  const a=i/N*Math.PI*2;let r=baseR+displacement(a,t);
+  if(shape==='square'){const c=Math.cos(a),s=Math.sin(a),e=.55;r*=Math.pow(Math.pow(Math.abs(c),2/e)+Math.pow(Math.abs(s),2/e),-e/2);}
+  if(layer)r-=p.wall;r=Math.max(layer?p.base*.5:p.base*.5+p.wall+1,r);
+  pos.push(Math.cos(a+tw*t)*r,(t-.5)*h,Math.sin(a+tw*t)*r);uv.push(i/N,t);
+ }}
+ for(let layer=0;layer<2;layer++)for(let j=0;j<M;j++)for(let i=0;i<N;i++){const a=start+layer*layerSize+j*stride+i,b=a+stride;
+  if(layer)idx.push(a,a+1,b,b,a+1,b+1);else idx.push(a,b,a+1,b,b+1,a+1);}
+ for(const j of [0,M])for(let i=0;i<N;i++){const a=start+j*stride+i,b=a+1,c=start+layerSize+j*stride+i,e=c+1;if(j===0)idx.push(a,c,b,b,c,e);else idx.push(a,b,c,b,e,c);}
+ const bh=Number(p.baseHeight||28),bd=Number(p.baseDiameter||90),style=p.baseStyle||'disc',y0=-h/2-bh,y1=-h/2-1,inner=Math.max(p.base*.5,bd*.27);
+ let rings;
+ if(style==='cone')rings=[{y:y0,r:bd*.31},{y:y0+bh*.18,r:bd*.5},{y:y1-bh*.12,r:bd*.4},{y:y1,r:inner}];
+ else if(style==='hourglass')rings=[{y:y0,r:bd*.42},{y:y0+bh*.25,r:bd*.5},{y:y0+bh*.62,r:bd*.31},{y:y1-bh*.12,r:bd*.36},{y:y1,r:inner}];
+ else if(style==='cylinder')rings=[{y:y0,r:bd*.5},{y:y1,r:inner}];
+ else rings=[{y:y0,r:bd*.42},{y:y0+bh*.12,r:bd*.5},{y:y1-bh*.12,r:bd*.5},{y:y1,r:inner}];
+ addRingSurface(rings,N,true);
+ const positions=new Float32Array(pos),uvs=new Float32Array(uv),indices=new Uint16Array(idx),normals=new Float32Array(positions.length);
+ for(let i=0;i<indices.length;i+=3){const a=indices[i]*3,b=indices[i+1]*3,c=indices[i+2]*3,ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2],vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
+  for(const o of [a,b,c]){normals[o]+=nx;normals[o+1]+=ny;normals[o+2]+=nz;}}
+ for(let i=0;i<normals.length;i+=3){const l=Math.hypot(normals[i],normals[i+1],normals[i+2])||1;normals[i]/=l;normals[i+1]/=l;normals[i+2]/=l;}
+ return {positions,normals,uvs,indices,radial:N,rows:M};
+}
+function encodeSTL({positions,indices}){const count=indices.length/3,buffer=new ArrayBuffer(84+count*50),view=new DataView(buffer),title='Curve Lab parametric lamp - mm';for(let i=0;i<title.length;i++)view.setUint8(i,title.charCodeAt(i));view.setUint32(80,count,true);let o=84;const write=n=>{view.setFloat32(o,n,true);o+=4;};
+ for(let i=0;i<indices.length;i+=3){const a=indices[i]*3,b=indices[i+1]*3,c=indices[i+2]*3,ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2],vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx,l=Math.hypot(nx,ny,nz)||1;write(nx/l);write(ny/l);write(nz/l);for(const k of [a,b,c]){write(positions[k]);write(positions[k+1]);write(positions[k+2]);}view.setUint16(o,0,true);o+=2;}return buffer;}
+const api={buildGeometry,encodeSTL};if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.LampGeometry=api;
+})(typeof window!=='undefined'?window:this);
