@@ -65,6 +65,7 @@ function buildGeometry(p,quality='full'){
  else if(style==='bulb')rings=[{y:y0,r:bd*.32},{y:y0+bh*.25,r:bd*.48},{y:y0+bh*.55,r:bd*.5},{y:y1-bh*.1,r:bd*.35},{y:y1,r:inner}];
  else if(style==='faceted')rings=[{y:y0,r:bd*.4},{y:y0+bh*.25,r:bd*.5},{y:y1-bh*.12,r:bd*.48},{y:y1,r:inner}];
  else rings=[{y:y0,r:bd*.42},{y:y0+bh*.12,r:bd*.5},{y:y1-bh*.12,r:bd*.5},{y:y1,r:inner}];
+ const baseIndexStart=idx.length;
  addRingSurface(rings,N,true);
  const positions=new Float32Array(pos),uvs=new Float32Array(uv),indices=new Uint16Array(idx),normals=new Float32Array(positions.length);
  for(let i=0;i<indices.length;i+=3){const a=indices[i]*3,b=indices[i+1]*3,c=indices[i+2]*3,ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2],vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
@@ -83,7 +84,7 @@ function buildGeometry(p,quality='full'){
   const a=(baseStart+j*baseStride)*3,b=(baseStart+j*baseStride+N)*3;
   normals[b]=normals[a];normals[b+1]=normals[a+1];normals[b+2]=normals[a+2];
  }
- return {positions,normals,uvs,indices,radial:N,rows:M};
+ return {positions,normals,uvs,indices,baseIndexStart,radial:N,rows:M};
 }
 function encodeSTL({positions,indices}){const count=indices.length/3,buffer=new ArrayBuffer(84+count*50),view=new DataView(buffer),title='Curve Lab parametric lamp - mm';for(let i=0;i<title.length;i++)view.setUint8(i,title.charCodeAt(i));view.setUint32(80,count,true);let o=84;const write=n=>{view.setFloat32(o,n,true);o+=4;};
  for(let i=0;i<indices.length;i+=3){const a=indices[i]*3,b=indices[i+1]*3,c=indices[i+2]*3,ux=positions[b]-positions[a],uy=positions[b+1]-positions[a+1],uz=positions[b+2]-positions[a+2],vx=positions[c]-positions[a],vy=positions[c+1]-positions[a+1],vz=positions[c+2]-positions[a+2],nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx,l=Math.hypot(nx,ny,nz)||1;write(nx/l);write(ny/l);write(nz/l);for(const k of [a,b,c]){write(positions[k]);write(positions[k+1]);write(positions[k+2]);}view.setUint16(o,0,true);o+=2;}return buffer;}
