@@ -25,7 +25,7 @@ function buildGeometry(p,quality='full'){
   if(relief==='knurl')return Math.sin(a*18*freq)*Math.sin(t*h*.14*freq)*p.depth*.75*s;
   if(relief==='pebbles')return Math.cos(a*13*freq+Math.sin(t*19*freq)*.8)*Math.cos(t*h*.12*freq)*p.depth*.6*s;
   if(relief==='contours')return Math.sin(t*h*.16*freq+Math.sin(a*4*freq)*1.4)*p.depth*.8*s;
-  if(relief==='checker')return Math.sign(Math.sin(a*12*freq)*Math.sin(t*h*.13*freq))*p.depth*.42*s;
+  if(relief==='checker')return Math.tanh(5*Math.sin(a*12*freq)*Math.sin(t*h*.13*freq))*p.depth*.42*s;
   return 0;
  }
  function addRingSurface(rings,segments,cap=true){const start=pos.length/3,stride=segments+1;
@@ -48,7 +48,7 @@ function buildGeometry(p,quality='full'){
  for(let layer=0;layer<2;layer++)for(let j=0;j<=M;j++){const t=j/M,baseR=d*.5*profile(t);for(let i=0;i<=N;i++){
   const a=i/N*Math.PI*2;let r=baseR+displacement(a,t);
   if(shape==='square'||shape==='faceted'){const c=Math.cos(a),s=Math.sin(a),e=shape==='faceted'?.18:.55;r*=Math.pow(Math.pow(Math.abs(c),2/e)+Math.pow(Math.abs(s),2/e),-e/2);}
-  if(layer)r-=p.wall;r=Math.max(layer?p.base*.5:p.base*.5+p.wall+1,r);
+  if(layer)r-=p.wall; r=Math.max(2,r);
   pos.push(Math.cos(a+tw*t)*r,(t-.5)*h,Math.sin(a+tw*t)*r);uv.push(i/N,t);
  }}
  for(let layer=0;layer<2;layer++)for(let j=0;j<M;j++)for(let i=0;i<N;i++){const a=start+layer*layerSize+j*stride+i,b=a+stride;
