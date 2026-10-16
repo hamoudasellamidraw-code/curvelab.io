@@ -40,12 +40,29 @@ header{padding:0 12px;gap:8px}
 .headerRight{gap:7px}
 .headerRight .btn{min-height:44px;padding:10px 11px;font-size:12px;white-space:nowrap}
 main{display:flex;flex-direction:column;height:calc(100dvh - 64px);overflow:hidden}
-.viewer{order:0;flex:0 0 40dvh;min-height:250px;height:40dvh}
+.viewer{order:0;flex:0 0 46dvh;min-height:300px;height:46dvh}
 .left{order:1;flex:1 1 auto;min-height:0;max-height:none;padding:22px 18px 36px;overflow-y:auto;overscroll-behavior:contain;border-right:0;border-top:1px solid var(--line);scrollbar-width:thin}
 .right{order:2;display:block;flex:0 0 auto;max-height:28dvh;padding:18px;overflow-y:auto;overscroll-behavior:contain}
 .right .sectionTitle{margin-bottom:10px}
 .metric{padding:10px 0}
-.viewLabel{left:14px;top:12px}
+.viewLabel{left:14px;top:10px;max-width:calc(100% - 28px)}
+.viewLabel .eyebrow{font-size:8px}
+.viewLabel h1{font-size:15px;margin:2px 0}
+.viewLabel p{display:none}
+.viewTools{top:44px;bottom:auto;left:8px;right:8px;justify-content:flex-end}
+.viewer .bottomBar{padding:8px 10px;min-height:44px;align-items:center}
+.viewer .bottomBar>div:first-child{display:none}
+.viewer .bottomBar .colorGroup{display:flex;flex-direction:row;align-items:center;gap:6px;flex-wrap:nowrap}
+.viewer .bottomBar .colorLabel{display:none}
+.viewer .bottomBar .swatches{gap:5px}
+.viewer .bottomBar .swatch{width:22px;height:22px;flex:0 0 22px}
+.previewStats{position:absolute;left:10px;right:10px;bottom:52px;display:flex;gap:6px;justify-content:center;pointer-events:none}
+.previewStats .metric{background:#10110fd9;border:1px solid #373a32;border-radius:5px;padding:5px 8px;min-width:0;flex:1;text-align:center}
+.previewStats .metric span{font-size:8px;letter-spacing:.04em}
+.previewStats .metric strong{font-size:12px;margin-top:1px}
+.previewStats .metric small{font-size:8px}
+.previewStats .metric:last-child{display:none}
+.viewer .viewLabel h1{max-width:180px}
 .viewLabel h1{font-size:19px}
 .viewLabel p{font-size:10px}
 .viewTools{top:auto;right:10px;left:10px;bottom:58px;justify-content:center;gap:6px}
@@ -134,5 +151,19 @@ input[type=range]{width:100%;height:34px;padding:0 2px;margin:0;touch-action:pan
 <script src="surface.js" defer></script>
 <script src="renderer.js" defer></script>
 <script src="app.js" defer></script>
+<script>
+(function(){
+ const viewer=document.querySelector('.viewer');
+ const summary=document.querySelector('.right');
+ if(!viewer||!summary)return;
+ const stats=document.createElement('div');
+ stats.className='previewStats';
+ ['sumHeight','sumDiameter','sumWall'].forEach(id=>{
+   const node=document.getElementById(id);
+   if(node){const metric=node.closest('.metric');if(metric)stats.appendChild(metric);}
+ });
+ viewer.appendChild(stats);
+})();
+</script>
 </body>
 </html>
