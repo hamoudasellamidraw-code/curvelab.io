@@ -16,8 +16,8 @@ class ThreeRenderer {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#eeeae1');
-    this.scene.fog = new THREE.Fog('#eeeae1', 650, 1800);
+    this.scene.background = new THREE.Color('#090a09');
+    this.scene.fog = new THREE.Fog('#090a09', 900, 2200);
     this.camera = new THREE.PerspectiveCamera(34, 1, .1, 2500);
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x9c9588, 2.1));
     this.key = new THREE.DirectionalLight(0xfff3df, 3.3);
@@ -33,13 +33,12 @@ class ThreeRenderer {
     rim.position.set(0, 180, -260);
     this.scene.add(fill, rim);
     this.floor = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400),
-      new THREE.MeshStandardMaterial({ color: '#eeeae1', roughness: .82 }));
+      new THREE.MeshStandardMaterial({ color: '#090a09', roughness: 1 }));
     this.floor.rotation.x = -Math.PI / 2;
     this.floor.receiveShadow = true;
     this.scene.add(this.floor);
-    this.material = new THREE.MeshPhysicalMaterial({ color: '#e9e3d5',
-      metalness: .02, roughness: .32, clearcoat: .34, clearcoatRoughness: .24,
-      side: THREE.FrontSide });
+    this.material = new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true,
+      metalness: 0, roughness: .88, side: THREE.DoubleSide });
     this.lamp = new THREE.Mesh(new THREE.BufferGeometry(), this.material);
     this.lamp.castShadow = true;
     this.lamp.receiveShadow = true;
@@ -69,12 +68,13 @@ class ThreeRenderer {
     let geometry = this.lamp.geometry;
     const existing = geometry.getAttribute('position');
     const sameTopology = existing && existing.array.length === mesh.positions.length
-      && geometry.index.array.length === mesh.indices.length;
+      && geometry.index && geometry.index.array.length === mesh.indices.length;
     if (!sameTopology) {
       geometry.dispose();
       geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.BufferAttribute(mesh.positions, 3));
       geometry.setAttribute('normal', new THREE.BufferAttribute(mesh.normals, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(mesh.positions.length), 3));
       geometry.setAttribute('uv', new THREE.BufferAttribute(mesh.uvs, 2));
       geometry.setIndex(new THREE.BufferAttribute(mesh.indices, 1));
       this.lamp.geometry = geometry;
@@ -92,14 +92,13 @@ class ThreeRenderer {
   }
 
   updateMaterial(state) {
-    const signature = [state.color, state.studio, state.wire, state.texture,
+    const signature = [state.color, state.baseColor, state.studio, state.wire, state.texture,
       state.textureScale, state.textureStrength].join('|');
     if (signature === this.lastMaterial) return;
     const material = this.material;
-    material.color.setRGB(...state.color, THREE.SRGBColorSpace);
+    material.color.setRGB(1, 1, 1);
     material.wireframe = state.wire;
-    material.clearcoat = state.studio ? .34 : .05;
-    material.roughness = state.texture === 'smooth' ? .2 : state.texture === 'stippling' ? .78 : state.studio ? .32 : .52;
+    material.roughness = .88;
     let texture = null;
     if (state.texture !== 'smooth') {
       if (!this.textures.has(state.texture)) {
@@ -163,6 +162,18 @@ class ThreeRenderer {
       this.lastCamera = cameraState;
     }
     this.updateMaterial(state);
+    const colorAttribute = this.lamp.geometry.getAttribute('color');
+    if (colorAttribute) {
+      const positions = this.lamp.geometry.getAttribute('position').array;
+      const colors = colorAttribute.array;
+      const threshold = -params.height * .5 - (params.baseHeight || 28) * .5;
+      const shade = state.color, base = state.baseColor || [52/255,56/255,50/255];
+      for (let i = 0; i < positions.length; i += 3) {
+        const c = positions[i + 1] < threshold ? base : shade;
+        colors[i] = c[0]; colors[i + 1] = c[1]; colors[i + 2] = c[2];
+      }
+      colorAttribute.needsUpdate = true;
+    }
     this.renderer.render(this.scene, this.camera);
     this.geometryDirty = false;
   }
