@@ -57,8 +57,10 @@
       canvas.width = pixelWidth;
       canvas.height = pixelHeight;
     }
-    const diameter = params.diameter * 1.25 + params.depth;
-    const scale = Math.min(width * .72 / diameter, height * .62 / (params.height + diameter * .3)) * state.zoom;
+    const baseHeight = Number(params.baseHeight || 28);
+    const fullHeight = params.height + baseHeight;
+    const fullDiameter = Math.max(params.diameter * 1.25 + params.depth, Number(params.baseDiameter || 90));
+    const scale = Math.min(width * .72 / fullDiameter, height * .72 / (fullHeight + fullDiameter * .18)) * state.zoom;
     return { width, height, scale, rotation: rotation(state.yaw, state.pitch) };
   }
 
@@ -201,7 +203,7 @@
       for (let i = 0; i < positions.length; i += 3) {
         const x = positions[i], y = positions[i + 1], z = positions[i + 2];
         p[i] = width * .5 + (m[0] * x + m[3] * y + m[6] * z) * scale;
-        p[i + 1] = height * .53 - (m[1] * x + m[4] * y + m[7] * z) * scale;
+        p[i + 1] = height * .50 - (m[1] * x + m[4] * (y + baseHeight * .5) + m[7] * z) * scale;
         p[i + 2] = m[2] * x + m[5] * y + m[8] * z;
       }
       const visible = [];
