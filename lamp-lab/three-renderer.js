@@ -12,40 +12,41 @@ class ThreeRenderer {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, preserveDrawingBuffer: true });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.0;
+    this.renderer.toneMappingExposure = 1.12;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.shadowMap.autoUpdate = false;
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color('#171916');
+    this.scene.background = new THREE.Color('#242521');
     this.pmrem = new THREE.PMREMGenerator(this.renderer);
     this.environment = this.pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
     this.scene.environment = this.environment;
-    this.scene.environmentIntensity = 0.8;
-    this.scene.fog = new THREE.Fog('#171916', 1000, 2400);
+    this.scene.environmentIntensity = 1.05;
+    this.scene.fog = new THREE.Fog('#242521', 1400, 3200);
     this.camera = new THREE.PerspectiveCamera(34, 1, .1, 2500);
-    this.scene.add(new THREE.HemisphereLight(0xf7f3e9, 0x5b6058, 1.35));
-    this.key = new THREE.DirectionalLight(0xfff1dc, 3.0);
-    this.key.position.set(-220, 300, 250);
+    this.scene.add(new THREE.HemisphereLight(0xfaf5ec, 0x454944, 1.05));
+    this.key = new THREE.DirectionalLight(0xfff0dc, 4.2);
+    this.key.position.set(-260, 360, 300);
     this.key.castShadow = true;
-    this.key.shadow.mapSize.set(2048, 2048);
+    this.key.shadow.mapSize.set(3072, 3072);
     this.key.shadow.bias = -.0003;
-    this.key.shadow.normalBias = .15;
+    this.key.shadow.normalBias = .035;
+    this.key.shadow.radius = 5;
     this.scene.add(this.key, this.key.target);
-    const fill = new THREE.DirectionalLight(0xd6e4ff, 1.05);
-    fill.position.set(250, 100, 180);
-    const rim = new THREE.DirectionalLight(0xffdfb8, 1.8);
-    rim.position.set(0, 240, -260);
-    const softbox = new THREE.DirectionalLight(0xffffff, 0.65);
-    softbox.position.set(-180, 60, -100);
+    const fill = new THREE.DirectionalLight(0xdbe7ff, 1.45);
+    fill.position.set(300, 150, 220);
+    const rim = new THREE.DirectionalLight(0xffdfbd, 2.25);
+    rim.position.set(40, 300, -320);
+    const softbox = new THREE.DirectionalLight(0xffffff, 0.9);
+    softbox.position.set(-220, 100, -160);
     this.scene.add(fill, rim, softbox);
     this.floor = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400),
-      new THREE.MeshStandardMaterial({ color: '#20221e', roughness: .92, metalness: 0 }));
+      new THREE.MeshStandardMaterial({ color: '#292b27', roughness: .86, metalness: 0 }));
     this.floor.rotation.x = -Math.PI / 2;
     this.floor.receiveShadow = true;
     this.scene.add(this.floor);
-    const materialOptions = { color: '#ffffff', metalness: 0, roughness: .78, side: THREE.DoubleSide, envMapIntensity: 0.8 };
+    const materialOptions = { color: '#ffffff', metalness: 0, roughness: .72, side: THREE.DoubleSide, envMapIntensity: 1.0 };
     this.material = new THREE.MeshStandardMaterial(materialOptions);
     this.baseMaterial = new THREE.MeshStandardMaterial(materialOptions);
     this.lamp = new THREE.Mesh(new THREE.BufferGeometry(), [this.material, this.baseMaterial]);
@@ -109,10 +110,10 @@ class ThreeRenderer {
       state.textureScale, state.textureStrength, state.finish].join('|');
     if (signature === this.lastMaterial) return;
     const finishes = {
-      matte: { roughness: .9, metalness: 0, bump: .42, env: .45 },
-      satin: { roughness: .62, metalness: 0, bump: .3, env: .75 },
-      ceramic: { roughness: .28, metalness: 0, bump: .12, env: 1.15 },
-      stone: { roughness: .96, metalness: 0, bump: .72, env: .35 }
+      matte: { roughness: .86, metalness: 0, bump: .28, env: .8 },
+      satin: { roughness: .48, metalness: 0, bump: .22, env: 1.0 },
+      ceramic: { roughness: .22, metalness: 0, bump: .08, env: 1.3 },
+      stone: { roughness: .94, metalness: 0, bump: .48, env: .65 }
     };
     const finish = finishes[state.finish] || finishes.matte;
     let texture = null;
@@ -135,9 +136,9 @@ class ThreeRenderer {
     for (const [material, color] of [[this.material, state.color], [this.baseMaterial, state.baseColor || state.color]]) {
       material.color.setRGB(color[0], color[1], color[2]);
       material.wireframe = state.wire;
-      material.roughness = state.studio ? finish.roughness : .92;
+      material.roughness = state.studio ? finish.roughness : .86;
       material.metalness = finish.metalness;
-      material.envMapIntensity = state.studio ? finish.env : .3;
+      material.envMapIntensity = state.studio ? finish.env : .65;
       if (Boolean(material.bumpMap) !== Boolean(texture)) material.needsUpdate = true;
       material.bumpMap = texture;
       material.bumpScale = state.textureStrength * finish.bump;
